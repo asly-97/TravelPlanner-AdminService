@@ -15,6 +15,7 @@ import com.revature.admin.TravelPlanner.models.SupportTicket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -137,6 +138,7 @@ public class SupportTicketService {
 
             SupportTicket updatedTicket = foundTicket.get();
             updatedTicket.setStatus(mapperStatus.toDto(status));
+            updatedTicket.setResolvedAt(Instant.now().toEpochMilli());
             stDao.save(updatedTicket);
             return ticketMapper.toDto(updatedTicket);
 
