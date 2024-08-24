@@ -71,12 +71,11 @@ public class SupportTicketService {
     public List<OutgoingSupportTicketDTO> getAlSupportTickets() {
 
         //Instantiate Lists
-        List<Note> nl = nDao.findAll();
-        List<OutgoingSupportTicketDTO> returnList = new ArrayList<OutgoingSupportTicketDTO>();
+        List<SupportTicket> stl = stDao.findAll();
+        List<OutgoingSupportTicketDTO> returnList = new ArrayList<>();
 
-        for (Note n: nl) {
-
-            returnList.add(ticketMapper.toDto(n.getSupportTicket()));
+        for (SupportTicket st: stl) {
+            returnList.add(ticketMapper.toDto(st));
 
         }
 

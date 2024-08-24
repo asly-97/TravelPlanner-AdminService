@@ -32,7 +32,7 @@ public class SecurityConfig {
         // Define admin-specific authorization rules for HTTP requests
         httpSecurity.authorizeHttpRequests(request -> {
             request
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
+                    .requestMatchers(HttpMethod.OPTIONS, "/admin/**").permitAll() // Allow preflight requests
                     // Allow unrestricted access to user registration and login endpoints
                     .requestMatchers(HttpMethod.POST, "/admin/register", "/admin/login").permitAll()
                     // Require authentication for all other admin-specific /admin/** URLs
