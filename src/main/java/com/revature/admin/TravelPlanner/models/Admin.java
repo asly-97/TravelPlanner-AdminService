@@ -27,6 +27,19 @@ public class Admin {
     @Column(nullable = false)
     private String password;
 
+    // For master admin, this field will be true; otherwise,
+    // it will default to false
+    @Column(nullable = false)
+    private boolean master;
+
+    @PrePersist
+    private void onCreate() {
+        // Set master to false by default upon creation
+        master = false;
+    }
+
+
+
     //Relational Variable(s)
     @JsonIgnore
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
@@ -83,6 +96,10 @@ public class Admin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isMaster() {
+        return master;
     }
 
     public List<Note> getNotes() {
