@@ -20,9 +20,11 @@ public class OutgoingSupportTicketMapper {
         String description = supportTicket.getDescription();
         TicketStatus status = supportTicket.getStatus();
         TicketType type = supportTicket.getType();
+        long createdDate = supportTicket.getCreatedAt();
+        long resolvedDate = supportTicket.getResolvedAt();
 
         return new OutgoingSupportTicketDTO(
-                supportTicketId, userId, firstName, lastName, email, description, status, type
+                supportTicketId, userId, firstName, lastName, email, description, status, type, createdDate, resolvedDate
         );
     }
 }

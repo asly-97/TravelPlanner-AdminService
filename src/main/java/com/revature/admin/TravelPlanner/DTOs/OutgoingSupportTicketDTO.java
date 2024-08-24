@@ -15,13 +15,15 @@ public class OutgoingSupportTicketDTO {
     private String description;
     private TicketStatus status;
     private TicketType type;
+    private long createdDate;
+    private long resolvedDate;
 
     //Constructors
     public OutgoingSupportTicketDTO() {
     }
 
-    public OutgoingSupportTicketDTO(int supportTicketId, int userId, String firstName, String lastName,
-                                    String email, String description, TicketStatus status, TicketType type) {
+    public OutgoingSupportTicketDTO(int supportTicketId, int userId, String firstName, String lastName, String email,
+                                    String description, TicketStatus status, TicketType type, long createdDate, long resolvedDate) {
         this.supportTicketId = supportTicketId;
         this.userId = userId;
         this.firstName = firstName;
@@ -30,6 +32,8 @@ public class OutgoingSupportTicketDTO {
         this.description = description;
         this.status = status;
         this.type = type;
+        this.createdDate = createdDate;
+        this.resolvedDate = resolvedDate;
     }
 
     public int getSupportTicketId() {
@@ -96,9 +100,25 @@ public class OutgoingSupportTicketDTO {
         this.type = type;
     }
 
+    public long getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(long createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public long getResolvedDate() {
+        return resolvedDate;
+    }
+
+    public void setResolvedDate(long resolvedDate) {
+        this.resolvedDate = resolvedDate;
+    }
+
     @Override
     public String toString() {
-        return "AdminOutgoingSupportTicketDTO{" +
+        return "OutgoingSupportTicketDTO{" +
                 "supportTicketId=" + supportTicketId +
                 ", userId=" + userId +
                 ", firstName='" + firstName + '\'' +
@@ -107,6 +127,8 @@ public class OutgoingSupportTicketDTO {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", type=" + type +
+                ", createdDate=" + createdDate +
+                ", resolvedDate=" + resolvedDate +
                 '}';
     }
 }

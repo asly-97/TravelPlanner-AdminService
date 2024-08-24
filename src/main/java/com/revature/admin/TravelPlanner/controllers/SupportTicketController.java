@@ -56,18 +56,12 @@ public class SupportTicketController {
         return ResponseEntity.ok("TODO");
     }
 
-    //Get All SupportTickets
+    //Get All Support Tickets
     @GetMapping("/get/all")
-    public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
-        return ResponseEntity.ok(sts.getAllSupportTickets());
-    }
-
-    //Returns all support tickets assigned to admin
-    @GetMapping("/get/admin")
-    public ResponseEntity<?> getAllSupportTicketsForAdmin( @RequestParam(name = "adminId", required = false) Integer id) {
+    public ResponseEntity<?> getAllSupportTickets( @RequestParam(name = "adminId", required = false) Integer id) {
 
         if (id == null) {
-            return ResponseEntity.ok(sts.getAlSupportTicketsAdmin());
+            return ResponseEntity.ok(sts.getAlSupportTickets());
         }
 
         try {

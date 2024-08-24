@@ -67,25 +67,8 @@ public class SupportTicketService {
 
     }
 
-    //Methods to return all SupportTickets for Users
-    public List<OutgoingSupportTicketDTO> getAllSupportTickets() {
-
-        //Instantiate Lists
-        List<SupportTicket> stl = stDao.findAll();
-        List<OutgoingSupportTicketDTO> returnList = new ArrayList<OutgoingSupportTicketDTO>();
-
-        for (SupportTicket st: stl) {
-
-            returnList.add(ticketMapper.toDto(st));
-
-        }
-
-        return returnList;
-
-    }
-
     //Methods to return all SupportTickets for Admins
-    public List<OutgoingSupportTicketDTO> getAlSupportTicketsAdmin() {
+    public List<OutgoingSupportTicketDTO> getAlSupportTickets() {
 
         //Instantiate Lists
         List<Note> nl = nDao.findAll();
