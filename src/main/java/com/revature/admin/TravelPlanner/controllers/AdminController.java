@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     //Service Variable(s)
