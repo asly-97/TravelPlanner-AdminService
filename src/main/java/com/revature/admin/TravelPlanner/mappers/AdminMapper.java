@@ -1,6 +1,7 @@
 package com.revature.admin.TravelPlanner.mappers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
+import com.revature.admin.TravelPlanner.DTOs.OutgoingJwtDTO;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,17 @@ public class AdminMapper {
         List<String> notes = admin.getNotes().stream().map(Note::getText).collect(toList());
 
         return new OutgoingAdminDTO(lastName, email, notes);
+    }
+
+    public OutgoingJwtDTO toDto(Admin admin,String token){
+        return new OutgoingJwtDTO(
+                admin.getAdminId(),
+                admin.getFirstName(),
+                admin.getLastName(),
+                admin.getEmail(),
+                admin.isMaster(),
+                token
+        );
     }
 
 }

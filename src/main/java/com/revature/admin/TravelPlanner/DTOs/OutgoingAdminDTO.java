@@ -9,6 +9,8 @@ public class OutgoingAdminDTO {
     private String email;
     private List<String> notes;
 
+    private boolean isMaster = false;
+
     //Constructors
     public OutgoingAdminDTO() {
     }
@@ -44,12 +46,21 @@ public class OutgoingAdminDTO {
         this.notes = notes;
     }
 
+    public boolean isMaster() {
+        return isMaster;
+    }
+
+    public void setMaster(boolean master) {
+        isMaster = master;
+    }
+
     @Override
     public String toString() {
         return "OutgoingAdminDTO{" +
                 "lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", notes=" + notes +
+                ", isMaster=" + isMaster +
                 '}';
     }
 }
