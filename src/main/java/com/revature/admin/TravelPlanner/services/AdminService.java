@@ -39,10 +39,6 @@ public class AdminService {
         this.jwtMapper = jwtMapper;
     }
 
-    //Constructor
-    @Autowired
-
-
     //Service Methods
 
     public Admin getAdminById(int adminId) throws CustomException {

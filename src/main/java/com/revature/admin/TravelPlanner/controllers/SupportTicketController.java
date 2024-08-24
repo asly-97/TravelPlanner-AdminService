@@ -49,23 +49,13 @@ public class SupportTicketController {
 
     //Get All Support Tickets
     @GetMapping("/get/all")
-    public ResponseEntity<?> getAllSupportTickets( @RequestParam(name = "adminId", required = false) Integer id) {
-
-        if (id == null) {
-            return ResponseEntity.ok(sts.getAlSupportTickets());
-        }
-
-        try {
-
-            List<OutgoingSupportTicketDTO> returnList = sts.getAllForAdmin(id);
-            return ResponseEntity.ok(returnList);
-
-        } catch (AdminNotFoundException | SupportTicketNotFoundException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-
-        }
-
+    public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
+        return ResponseEntity.ok(sts.getAlSupportTickets());
     }
+
+    /*
+    *   ==============PATCH MAPPINGS=================
+    */
 
     //Resolve a Support Ticket
     @PatchMapping("/resolve/{id}")
@@ -73,7 +63,7 @@ public class SupportTicketController {
 
         try {
 
-            OutgoingSupportTicketDTO resolvedTicket = sts.updateStatus(id, type);
+            OutgoingSupportTicketDTO resolvedTicket = sts.resolve(id, type);
             return ResponseEntity.ok(resolvedTicket);
 
         } catch (SupportTicketNotFoundException | InvalidStatusException e) {

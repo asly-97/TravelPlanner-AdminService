@@ -44,8 +44,6 @@ public class SupportTicket {
         // Sets the timestamps for when the ticket is created
         createdAt = Instant.now().toEpochMilli();
 
-        //Sets resolvedAt to 0 to signify that the ticket is unresolved
-        resolvedAt = 0;
 
         // Sets PENDING as the default status when the ticket is created for the first time
         if(status == null){
@@ -61,12 +59,14 @@ public class SupportTicket {
 
     public SupportTicket() {}
 
-    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type) {
+    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type, long createdAt, long resolvedAt) {
         this.supportTicketId = supportTicketId;
         this.user = user;
         this.status = status;
         this.description = description;
         this.type = type;
+        this.createdAt = createdAt;
+        this.resolvedAt = resolvedAt;
     }
 
     public int getSupportTicketId() {
