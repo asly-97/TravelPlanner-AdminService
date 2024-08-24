@@ -61,16 +61,16 @@ public class AdminService {
 
     //Method to return OutgoingAdmins to the controller
     public List<OutgoingAdminDTO> getAllAdmins() {
-
-        List<Admin> al = aDao.findAll();
-        List<OutgoingAdminDTO> returnedList = new ArrayList<OutgoingAdminDTO>();
-
-        for (Admin oa : al) {
-            returnedList.add(am.toDto(oa));
-        }
-
-        return returnedList;
-
+//
+//        List<Admin> al = aDao.findAll();
+//        List<OutgoingAdminDTO> returnedList = new ArrayList<OutgoingAdminDTO>();
+//
+//        for (Admin oa : al) {
+//            returnedList.add(am.toDto(oa));
+//        }
+//
+//        return returnedList;
+    return null;
     }
 
     public Admin updateAdminById(int adminId, Map<String,String> newAdmin) throws CustomException {

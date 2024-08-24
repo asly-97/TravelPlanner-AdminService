@@ -31,7 +31,10 @@ public class SupportTicket {
     @Column(nullable = false)
     private TicketType type;
 
+    @Column
     private long createdAt;
+
+    @Column
     private long resolvedAt;
 
 
@@ -40,6 +43,9 @@ public class SupportTicket {
     private void onCreate(){
         // Sets the timestamps for when the ticket is created
         createdAt = Instant.now().toEpochMilli();
+
+        //Sets resolvedAt to 0 to signify that the ticket is unresolved
+        resolvedAt = 0;
 
         // Sets PENDING as the default status when the ticket is created for the first time
         if(status == null){

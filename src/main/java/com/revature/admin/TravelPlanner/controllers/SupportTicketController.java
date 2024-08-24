@@ -48,14 +48,6 @@ public class SupportTicketController {
 
     }
 
-    //Case-sensitive. Query in ALL CAPS!
-    @GetMapping("/get")
-    public ResponseEntity<?> getSupportTicketsByType( @RequestParam(name = "type") TicketType type) {
-
-        //TODO::Create Service
-        return ResponseEntity.ok("TODO");
-    }
-
     //Get All Support Tickets
     @GetMapping("/get/all")
     public ResponseEntity<?> getAllSupportTickets( @RequestParam(name = "adminId", required = false) Integer id) {

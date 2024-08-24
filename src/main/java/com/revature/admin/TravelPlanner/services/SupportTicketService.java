@@ -124,11 +124,6 @@ public class SupportTicketService {
 
     }
 
-    //-------------Post Methods------------
-    //
-    //
-
-
     //-------------Patch Methods------------
     //
     //
@@ -142,7 +137,7 @@ public class SupportTicketService {
         if (foundTicket.isPresent()) {
 
             SupportTicket updatedTicket = foundTicket.get();
-            updatedTicket.setStatus(mapperStatus.tDto(status));
+            updatedTicket.setStatus(mapperStatus.toDto(status));
             stDao.save(updatedTicket);
             return ticketMapper.toDto(updatedTicket);
 
