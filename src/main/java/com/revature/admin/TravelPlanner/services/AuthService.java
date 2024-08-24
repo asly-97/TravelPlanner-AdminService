@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -71,4 +72,23 @@ public class AuthService {
             throw new AdminNotFoundException(adminDTO.getEmail());
         }
     }
+
+    public Admin getLoggedInAdmin() throws AdminNotFoundException {
+        // Get the authentication object
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if authentication is not null and if the user is authenticated
+        if (authentication != null && authentication.isAuthenticated()) {
+
+            // Since it's a JWT token-based auth
+            // the principal(user/username) will be a string
+            // Get the username(email) of the authenticated user
+            String email =  authentication.getPrincipal().toString();
+
+            return adminDAO.findByEmail(email)
+                    .orElseThrow(()->AdminNotFoundException.withEmail(email));
+        }
+        return null;
+    }
+
 }

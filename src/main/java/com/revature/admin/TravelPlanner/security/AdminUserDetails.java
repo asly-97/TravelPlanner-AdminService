@@ -1,9 +1,12 @@
 package com.revature.admin.TravelPlanner.security;
 
+import com.revature.admin.TravelPlanner.enums.AdminRole;
 import com.revature.admin.TravelPlanner.models.Admin;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +20,14 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if(admin.isMaster()){
+            authorities.add(new SimpleGrantedAuthority(AdminRole.ROLE_MASTER.name()));
+        }
+        else {
+            authorities.add(new SimpleGrantedAuthority(AdminRole.ROLE_ADMIN.name()));
+        }
+        return authorities;
     }
 
     @Override

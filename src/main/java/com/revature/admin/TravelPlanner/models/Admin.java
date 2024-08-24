@@ -102,6 +102,10 @@ public class Admin {
         return master;
     }
 
+    public void setMaster(boolean master) {
+        this.master = master;
+    }
+
     public List<Note> getNotes() {
         return notes;
     }

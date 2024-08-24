@@ -1,15 +1,12 @@
 package com.revature.admin.TravelPlanner.controllers;
-
-import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.services.AdminService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,33 +15,21 @@ import java.util.Map;
 public class AdminController {
 
     //Service Variable(s)
-    private AdminService as;
+    protected AdminService as;
 
     @Autowired
     AuthController authController;
 
     //Constructor
     @Autowired
-    public AdminController(AdminService as) {
+    public AdminController(@Qualifier("adminService") AdminService as) {
         this.as = as;
     }
 
-    //Mappings
-    @GetMapping
-    public List<OutgoingAdminDTO> getAllAdmins() {
-        return as.getAllAdmins();
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Admin> createAdmin(@RequestBody @Valid Admin admin)throws CustomException {
-        Admin returningAdmin =  as.createAdmin(admin);
-        return ResponseEntity.status(201).body(returningAdmin);
-    }
-
-    @PatchMapping
+    @PatchMapping()
     public ResponseEntity<Object> updateLoggedInAdminProfile(@RequestBody Map<String,String> newAdmin) throws CustomException {
         try{
-            Admin admin = as.updateAdminById(loggedInAdminId(), newAdmin);
+            Admin admin = as.updateLoggedInAdmin(newAdmin);
             return ResponseEntity.ok(admin);
         }catch(Exception e){
             return ResponseEntity.status(400).body(null);

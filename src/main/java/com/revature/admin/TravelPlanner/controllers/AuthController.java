@@ -7,6 +7,7 @@ import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.services.AuthService;
 import com.revature.admin.TravelPlanner.services.AdminService;
+import com.revature.admin.TravelPlanner.services.MasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ public class AuthController {
     AuthService authService;
 
     @Autowired
-    AdminService adminService;
+    MasterService adminService;
 
     @PostMapping("/admin/login")
     public ResponseEntity<OutgoingJwtDTO> auth(@RequestBody IncomingAdminDTO loginDTO)
@@ -31,20 +32,7 @@ public class AuthController {
     }
 
     public Admin getAuthenticatedAdmin() throws CustomException {
-        // Get the authentication object
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Check if authentication is not null and if the user is authenticated
-        if (authentication != null && authentication.isAuthenticated()) {
-
-            // Since it's a JWT token-based auth
-            // the principal(user/username) will be a string
-            // Get the username(email) of the authenticated user
-            String email =  authentication.getPrincipal().toString();
-
-            return adminService.getAdminByEmail(email);
-        }
-        return null;
+        return authService.getLoggedInAdmin();
     }
 
 

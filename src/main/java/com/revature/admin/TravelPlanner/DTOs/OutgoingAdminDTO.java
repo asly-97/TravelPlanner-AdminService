@@ -5,20 +5,41 @@ import java.util.List;
 public class OutgoingAdminDTO {
 
     //Model variables
+    private int adminId;
+    private boolean isMaster = false;
+    private String firstName;
     private String lastName;
     private String email;
     private List<String> notes;
 
-    private boolean isMaster = false;
 
     //Constructors
     public OutgoingAdminDTO() {
     }
 
-    public OutgoingAdminDTO(String lastName, String email, List<String> notes) {
+    public OutgoingAdminDTO(int adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes) {
+        this.adminId = adminId;
+        this.isMaster = isMaster;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.notes = notes;
+    }
+
+    public int getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     //Getter and Setter
