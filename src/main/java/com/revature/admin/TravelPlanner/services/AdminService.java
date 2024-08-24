@@ -5,13 +5,12 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
-import com.revature.admin.TravelPlanner.mappers.AdminMapper;
+import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class AdminService {
     private AdminDAO aDao;
 
     //Mapper
-    private AdminMapper am;
+    private OutgoingJWTMapper jwtMapper;
 
     /* TODO: uncomment when admin authcontroller is made
     @Autowired
@@ -34,11 +33,15 @@ public class AdminService {
     @Autowired
     private PasswordEncoderProvider passwordEncoder;
 
+    @Autowired
+    public AdminService(AdminDAO aDao, OutgoingJWTMapper jwtMapper) {
+        this.aDao = aDao;
+        this.jwtMapper = jwtMapper;
+    }
+
     //Constructor
     @Autowired
-    public AdminService(AdminDAO aDao) {
-        this.aDao = aDao;
-    }
+
 
     //Service Methods
 
@@ -59,6 +62,7 @@ public class AdminService {
         throw new AdminNotFoundException("Admin with email: " + email+" was not found.");
     }
 
+    //TODO::Refractor with JWTMapper
     //Method to return OutgoingAdmins to the controller
     public List<OutgoingAdminDTO> getAllAdmins() {
 //

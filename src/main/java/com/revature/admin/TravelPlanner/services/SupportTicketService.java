@@ -33,7 +33,6 @@ public class SupportTicketService {
     private TypeMapper mapperType;
     private StatusMapper mapperStatus;
 
-    //Mappers need
     //Constructor
     @Autowired
     public SupportTicketService(SupportTicketDAO stDao, AdminDAO aDao, NoteDAO nDao, OutgoingSupportTicketMapper mapperAdmin,
@@ -84,7 +83,7 @@ public class SupportTicketService {
     }
 
     //Method to return all tickets assigned to an admin
-    public List<OutgoingSupportTicketDTO> getAllToAdminId(int id) throws AdminNotFoundException,
+    public List<OutgoingSupportTicketDTO> getAllForAdmin(int id) throws AdminNotFoundException,
             SupportTicketNotFoundException{
 
         //Check if Admin exists

@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OutgoingNoteMapper {
+
+    public OutgoingNoteMapper() {
+    }
+
     public OutgoingNoteDTO toDto(Note note) {
         OutgoingNoteDTO returnNote = new OutgoingNoteDTO(
                 note.getNoteId(),

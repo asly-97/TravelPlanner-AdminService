@@ -1,7 +1,6 @@
 package com.revature.admin.TravelPlanner.controllers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
-import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
@@ -32,7 +31,7 @@ public class SupportTicketController {
     *   ==============GET MAPPINGS=================
     */
 
-    //Endpoint ./support?id={supportTicketId}
+    //Return Support Ticket by Id
     @GetMapping
     public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") int id ) {
 
@@ -58,7 +57,7 @@ public class SupportTicketController {
 
         try {
 
-            List<OutgoingSupportTicketDTO> returnList = sts.getAllToAdminId(id);
+            List<OutgoingSupportTicketDTO> returnList = sts.getAllForAdmin(id);
             return ResponseEntity.ok(returnList);
 
         } catch (AdminNotFoundException | SupportTicketNotFoundException e) {
@@ -67,8 +66,6 @@ public class SupportTicketController {
         }
 
     }
-
-
 
     //Resolve a Support Ticket
     @PatchMapping("/resolve/{id}")
