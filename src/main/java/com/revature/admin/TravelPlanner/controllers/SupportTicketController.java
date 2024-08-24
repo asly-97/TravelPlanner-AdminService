@@ -1,7 +1,6 @@
 package com.revature.admin.TravelPlanner.controllers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
-import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
@@ -32,7 +31,7 @@ public class SupportTicketController {
     *   ==============GET MAPPINGS=================
     */
 
-    //Endpoint ./support?id={supportTicketId}
+    //Return Support Ticket by Id
     @GetMapping
     public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") int id ) {
 
@@ -48,35 +47,15 @@ public class SupportTicketController {
 
     }
 
-    //Case-sensitive. Query in ALL CAPS!
-    @GetMapping("/get")
-    public ResponseEntity<?> getSupportTicketsByType( @RequestParam(name = "type") TicketType type) {
-
-        //TODO::Create Service
-        return ResponseEntity.ok("TODO");
-    }
-
     //Get All Support Tickets
     @GetMapping("/get/all")
-    public ResponseEntity<?> getAllSupportTickets( @RequestParam(name = "adminId", required = false) Integer id) {
-
-        if (id == null) {
-            return ResponseEntity.ok(sts.getAlSupportTickets());
-        }
-
-        try {
-
-            List<OutgoingSupportTicketDTO> returnList = sts.getAllToAdminId(id);
-            return ResponseEntity.ok(returnList);
-
-        } catch (AdminNotFoundException | SupportTicketNotFoundException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-
-        }
-
+    public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
+        return ResponseEntity.ok(sts.getAlSupportTickets());
     }
 
-
+    /*
+    *   ==============PATCH MAPPINGS=================
+    */
 
     //Resolve a Support Ticket
     @PatchMapping("/resolve/{id}")
@@ -84,7 +63,7 @@ public class SupportTicketController {
 
         try {
 
-            OutgoingSupportTicketDTO resolvedTicket = sts.updateStatus(id, type);
+            OutgoingSupportTicketDTO resolvedTicket = sts.resolve(id, type);
             return ResponseEntity.ok(resolvedTicket);
 
         } catch (SupportTicketNotFoundException | InvalidStatusException e) {

@@ -31,7 +31,10 @@ public class SupportTicket {
     @Column(nullable = false)
     private TicketType type;
 
+    @Column
     private long createdAt;
+
+    @Column
     private long resolvedAt;
 
 
@@ -40,6 +43,7 @@ public class SupportTicket {
     private void onCreate(){
         // Sets the timestamps for when the ticket is created
         createdAt = Instant.now().toEpochMilli();
+
 
         // Sets PENDING as the default status when the ticket is created for the first time
         if(status == null){
@@ -55,12 +59,14 @@ public class SupportTicket {
 
     public SupportTicket() {}
 
-    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type) {
+    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type, long createdAt, long resolvedAt) {
         this.supportTicketId = supportTicketId;
         this.user = user;
         this.status = status;
         this.description = description;
         this.type = type;
+        this.createdAt = createdAt;
+        this.resolvedAt = resolvedAt;
     }
 
     public int getSupportTicketId() {

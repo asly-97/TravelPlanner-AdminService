@@ -4,7 +4,7 @@ import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DTOs.IncomingAdminDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingJwtDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
-import com.revature.admin.TravelPlanner.mappers.AdminMapper;
+import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class AuthService {
     JwtTokenProvider jwtProvider;
 
     @Autowired
-    AdminMapper adminMapper;
+    OutgoingJWTMapper outgoingJWTMapper;
 
     // Method to handle login for admin users
     public OutgoingJwtDTO login(IncomingAdminDTO adminDTO) throws AdminNotFoundException {
@@ -65,7 +65,7 @@ public class AuthService {
             String token = jwtProvider.generateToken(authAdmin.getAdminId());
 
             // Return a DTO containing the JWT token, admin ID, and email
-            return adminMapper.toDto(authAdmin,token);
+            return outgoingJWTMapper.toDto(authAdmin,token);
 
         } else {
             // If login was unsuccessful, throw a UserNotFoundException with the provided email
