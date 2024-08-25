@@ -2,37 +2,25 @@ package com.revature.admin.TravelPlanner.DTOs;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
 
+import java.util.Date;
+
 public class OutgoingNoteDTO {
 
-    //Model Variable
     private int noteId;
     private int adminId;
     private int ticketId;
-    private int userId;
-    private TicketStatus status;
-    private TicketType type;
-    private String description;
-    private long dateCreated;
-    private long dateResolved;
+    private String text;
+    private Date createdAt;
 
-    //Constructors
-    public OutgoingNoteDTO() {
-    }
-
-    public OutgoingNoteDTO(int noteId, int adminId, int ticketId, int userId, TicketStatus status, TicketType type,
-                           String description, long dateCreated, long dateResolved) {
+    public OutgoingNoteDTO(int noteId, int adminId, int ticketId, String text, Date createdAt) {
         this.noteId = noteId;
         this.adminId = adminId;
         this.ticketId = ticketId;
-        this.userId = userId;
-        this.status = status;
-        this.type = type;
-        this.description = description;
-        this.dateCreated = dateCreated;
-        this.dateResolved = dateResolved;
+        this.text = text;
+        this.createdAt = createdAt;
     }
 
-    //Getter and Setter
+
 
     public int getNoteId() {
         return noteId;
@@ -58,52 +46,20 @@ public class OutgoingNoteDTO {
         this.ticketId = ticketId;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getText() {
+        return text;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public TicketStatus getStatus() {
-        return status;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setStatus(TicketStatus status) {
-        this.status = status;
-    }
-
-    public TicketType getType() {
-        return type;
-    }
-
-    public void setType(TicketType type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public long getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(long dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public long getDateResolved() {
-        return dateResolved;
-    }
-
-    public void setDateResolved(long dateResolved) {
-        this.dateResolved = dateResolved;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
@@ -112,12 +68,8 @@ public class OutgoingNoteDTO {
                 "noteId=" + noteId +
                 ", adminId=" + adminId +
                 ", ticketId=" + ticketId +
-                ", userId=" + userId +
-                ", status=" + status +
-                ", type=" + type +
-                ", description='" + description + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", dateResolved=" + dateResolved +
+                ", text='" + text + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

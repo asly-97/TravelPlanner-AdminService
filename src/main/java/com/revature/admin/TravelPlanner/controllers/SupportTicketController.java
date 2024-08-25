@@ -2,8 +2,10 @@ package com.revature.admin.TravelPlanner.controllers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
+import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
+import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class SupportTicketController {
             return ResponseEntity.ok(returnSupportTicket);
 
         } catch (SupportTicketNotFoundException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessageText());
 
         }
 
@@ -58,19 +60,16 @@ public class SupportTicketController {
     */
 
     //Resolve a Support Ticket
-    @PatchMapping("/resolve/{id}")
-    public ResponseEntity<?> resolve(@PathVariable int id, @RequestBody String type){
+    // Resolving a ticket can by sending a request to this endpoint
+    // And include an optional note text
+    @PatchMapping("/resolve/{ticketId}")
+    public ResponseEntity<OutgoingSupportTicketDTO> resolveTicket(
+            @PathVariable int ticketId,
+            @RequestBody String noteText) throws SupportTicketNotFoundException, AdminNotFoundException {
 
-        try {
+        OutgoingSupportTicketDTO resolvedTicket = sts.resolve(ticketId, noteText);
 
-            OutgoingSupportTicketDTO resolvedTicket = sts.resolve(id, type);
-            return ResponseEntity.ok(resolvedTicket);
-
-        } catch (SupportTicketNotFoundException | InvalidStatusException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-
-        }
-
+        return ResponseEntity.ok(resolvedTicket);
     }
 
     /*
@@ -85,10 +84,16 @@ public class SupportTicketController {
             return ResponseEntity.ok(sts.delete(id));
 
         } catch (SupportTicketNotFoundException e) {
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.ok(e.getMessageText());
 
         }
 
+    }
+
+    // handles all the custom exceptions
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Object> handleCustomException( CustomException e){
+        return ResponseEntity.status(e.getStatus()).body(e.getMessageText());
     }
 
 }

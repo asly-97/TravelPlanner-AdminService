@@ -11,18 +11,12 @@ public class OutgoingNoteMapper {
     }
 
     public OutgoingNoteDTO toDto(Note note) {
-        OutgoingNoteDTO returnNote = new OutgoingNoteDTO(
+        return new OutgoingNoteDTO(
                 note.getNoteId(),
                 note.getAdmin().getAdminId(),
                 note.getSupportTicket().getSupportTicketId(),
-                note.getSupportTicket().getUser().getUserId(),
-                note.getSupportTicket().getStatus(),
-                note.getSupportTicket().getType(),
-                note.getSupportTicket().getDescription(),
-                note.getSupportTicket().getCreatedAt(),
-                note.getSupportTicket().getResolvedAt()
+                note.getText(),
+                note.getCreatedAt()
         );
-
-        return returnNote;
     }
 }

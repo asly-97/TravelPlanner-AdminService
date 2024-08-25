@@ -6,12 +6,9 @@ import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.services.AuthService;
-import com.revature.admin.TravelPlanner.services.AdminService;
 import com.revature.admin.TravelPlanner.services.MasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,7 +36,7 @@ public class AuthController {
     // handles all the custom exceptions
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException( CustomException e){
-        return ResponseEntity.status(e.getStatus()).body(e.getMsg());
+        return ResponseEntity.status(e.getStatus()).body(e.getMessageText());
     }
 
 

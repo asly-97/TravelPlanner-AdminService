@@ -5,6 +5,7 @@ public enum TicketType {
     TECHNICAL_ISSUES,   // Any Technical issue
     INFORMATION,        // Request information (ex: Hotels)
     FEEDBACK,           // For feedback and suggestions
-    PRIVACY             // For privacy and security concerns
+    PRIVACY,             // For privacy and security concerns
+    ACCOUNT_DELETION    // For requests related to account deletion
 }
 

@@ -52,7 +52,7 @@ public class AdminController {
     // handles all the custom exceptions
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException( CustomException e){
-        return ResponseEntity.status(e.getStatus()).body(e.getMsg());
+        return ResponseEntity.status(e.getStatus()).body(e.getMessageText());
     }
 
 

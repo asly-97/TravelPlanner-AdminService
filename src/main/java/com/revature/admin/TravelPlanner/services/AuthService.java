@@ -6,6 +6,7 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingJwtDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
+import com.revature.admin.TravelPlanner.security.AdminUserDetails;
 import com.revature.admin.TravelPlanner.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -83,7 +84,9 @@ public class AuthService {
             // Since it's a JWT token-based auth
             // the principal(user/username) will be a string
             // Get the username(email) of the authenticated user
-            String email =  authentication.getPrincipal().toString();
+            AdminUserDetails adminUserDetails = (AdminUserDetails) authentication.getPrincipal();
+            String email =  adminUserDetails.getUsername();
+            System.out.println("Requested Auth Admin: "+email);
 
             return adminDAO.findByEmail(email)
                     .orElseThrow(()->AdminNotFoundException.withEmail(email));

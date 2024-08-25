@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface SupportTicketDAO extends JpaRepository<SupportTicket, Integer> {
 
-    List<OutgoingSupportTicketDTO> findAllByType(TicketType type);
+    List<SupportTicket> findAllByType(TicketType type);
 
 }

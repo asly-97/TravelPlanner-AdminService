@@ -5,8 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NoteDAO extends JpaRepository<Note, Integer> {
-    public List<Note> findAllByAdminAdminId(int admin_id);
+
+    // Find by support ticket id
+    Optional<Note> findBySupportTicketSupportTicketId(int ticketId);
+
 }
