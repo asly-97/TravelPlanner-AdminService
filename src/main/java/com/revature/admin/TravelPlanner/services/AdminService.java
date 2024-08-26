@@ -2,6 +2,7 @@ package com.revature.admin.TravelPlanner.services;
 
 import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
+import com.revature.admin.TravelPlanner.controllers.AuthController;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
@@ -26,18 +27,14 @@ public class AdminService {
     //Mapper
     private AdminMapper am;
 
-    /* TODO: uncomment when admin authcontroller is made
-    @Autowired
-    AdminAuthController authController;
-    */
-
-    @Autowired
     private PasswordEncoderProvider passwordEncoder;
 
     //Constructor
     @Autowired
-    public AdminService(AdminDAO aDao) {
+    public AdminService(AdminDAO aDao, AdminMapper am, PasswordEncoderProvider passwordEncoder) {
         this.aDao = aDao;
+        this.am = am;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //Service Methods
@@ -85,7 +82,7 @@ public class AdminService {
         if(newAdmin.containsKey("email")) {
             Optional<Admin> admin2 = aDao.findByEmail(newAdmin.get("email"));
             if(admin2.isPresent()){
-                if(admin2.get().getAdminId() != 0){ // TODO: replace 0 with authController.getAuthenticatedAdmin().getAdminId
+                if(admin2.get().getAdminId() != adminId){
                     throw new EmailAlreadyExistException("Another admin already uses this email address");
                 }
             }
