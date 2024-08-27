@@ -2,11 +2,12 @@ package com.revature.admin.TravelPlanner.DTOs;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class OutgoingAdminDTO {
 
     //Model variables
-    private int adminId;
+    private UUID adminId;
     private boolean isMaster = false;
     private String firstName;
     private String lastName;
@@ -19,7 +20,7 @@ public class OutgoingAdminDTO {
     public OutgoingAdminDTO() {
     }
 
-    public OutgoingAdminDTO(int adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes, Date createdAt) {
+    public OutgoingAdminDTO(UUID adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes, Date createdAt) {
         this.adminId = adminId;
         this.isMaster = isMaster;
         this.firstName = firstName;
@@ -29,11 +30,11 @@ public class OutgoingAdminDTO {
         this.createdAt = createdAt;
     }
 
-    public int getAdminId() {
+    public UUID getAdminId() {
         return adminId;
     }
 
-    public void setAdminId(int adminId) {
+    public void setAdminId(UUID adminId) {
         this.adminId = adminId;
     }
 

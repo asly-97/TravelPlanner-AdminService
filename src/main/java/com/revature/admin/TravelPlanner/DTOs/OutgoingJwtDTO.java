@@ -1,14 +1,16 @@
 package com.revature.admin.TravelPlanner.DTOs;
 
+import java.util.UUID;
+
 public class OutgoingJwtDTO {
-    private int adminId;
+    private UUID adminId;
     private String firstName;
     private String lastName;
     private String email;
     private boolean isMaster;
     private String token;
 
-    public OutgoingJwtDTO(int adminId, String firstName, String lastName, String email, boolean isMaster, String token) {
+    public OutgoingJwtDTO(UUID adminId, String firstName, String lastName, String email, boolean isMaster, String token) {
         this.adminId = adminId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -17,7 +19,7 @@ public class OutgoingJwtDTO {
         this.token = token;
     }
 
-    public int getAdminId() {
+    public UUID getAdminId() {
         return adminId;
     }
 

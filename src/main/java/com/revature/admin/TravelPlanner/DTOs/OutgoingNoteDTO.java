@@ -1,18 +1,17 @@
 package com.revature.admin.TravelPlanner.DTOs;
-import com.revature.admin.TravelPlanner.enums.TicketStatus;
-import com.revature.admin.TravelPlanner.enums.TicketType;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class OutgoingNoteDTO {
 
-    private int noteId;
-    private int adminId;
-    private int ticketId;
+    private UUID noteId;
+    private UUID adminId;
+    private UUID ticketId;
     private String text;
     private Date createdAt;
 
-    public OutgoingNoteDTO(int noteId, int adminId, int ticketId, String text, Date createdAt) {
+    public OutgoingNoteDTO(UUID noteId, UUID adminId, UUID ticketId, String text, Date createdAt) {
         this.noteId = noteId;
         this.adminId = adminId;
         this.ticketId = ticketId;
@@ -22,27 +21,27 @@ public class OutgoingNoteDTO {
 
 
 
-    public int getNoteId() {
+    public UUID getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(UUID noteId) {
         this.noteId = noteId;
     }
 
-    public int getAdminId() {
+    public UUID getAdminId() {
         return adminId;
     }
 
-    public void setAdminId(int adminId) {
+    public void setAdminId(UUID adminId) {
         this.adminId = adminId;
     }
 
-    public int getTicketId() {
+    public UUID getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(int ticketId) {
+    public void setTicketId(UUID ticketId) {
         this.ticketId = ticketId;
     }
 

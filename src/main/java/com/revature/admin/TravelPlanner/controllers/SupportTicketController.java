@@ -3,15 +3,14 @@ package com.revature.admin.TravelPlanner.controllers;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
-import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
-import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -35,7 +34,7 @@ public class SupportTicketController {
 
     //Return Support Ticket by Id
     @GetMapping
-    public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") int id ) {
+    public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") UUID id ) {
 
         try {
 
@@ -64,7 +63,7 @@ public class SupportTicketController {
     // And include an optional note text
     @PatchMapping("/resolve/{ticketId}")
     public ResponseEntity<OutgoingSupportTicketDTO> resolveTicket(
-            @PathVariable int ticketId,
+            @PathVariable UUID ticketId,
             @RequestBody String noteText) throws SupportTicketNotFoundException, AdminNotFoundException {
 
         OutgoingSupportTicketDTO resolvedTicket = sts.resolve(ticketId, noteText);
@@ -78,7 +77,7 @@ public class SupportTicketController {
 
     //Delete a Support Ticket from the DB
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(int id){
+    public ResponseEntity<?> delete(UUID id){
 
         try{
             return ResponseEntity.ok(sts.delete(id));

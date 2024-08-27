@@ -8,8 +8,9 @@ import com.revature.admin.TravelPlanner.exceptions.InvalidNoteTextException;
 import com.revature.admin.TravelPlanner.exceptions.NoteNotFoundException;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class NoteService {
@@ -21,7 +22,7 @@ public class NoteService {
         this.ticketDAO = ticketDAO;
     }
 
-    public Note updateNoteText(int noteId, String updatedText) throws CustomException {
+    public Note updateNoteText(UUID noteId, String updatedText) throws CustomException {
         Note note = noteDAO
                 .findById(noteId)
                 .orElseThrow(()->new NoteNotFoundException(noteId));
@@ -37,7 +38,7 @@ public class NoteService {
         return note;
     }
 
-    public String deleteNote(int noteId) throws CustomException {
+    public String deleteNote(UUID noteId) throws CustomException {
         Note note = noteDAO
                 .findById(noteId)
                 .orElseThrow(()->new NoteNotFoundException(noteId));
@@ -51,7 +52,7 @@ public class NoteService {
         return "Note with ID#"+noteId+ " was deleted, and its related ticket is set back to Pending";
     }
 
-    public Note getBySupportTicketId(int ticketId){
+    public Note getBySupportTicketId(UUID ticketId){
         return noteDAO
                 .findBySupportTicketSupportTicketId(ticketId)
                 .orElse(null);

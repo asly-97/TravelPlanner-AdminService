@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/admin/login")
     public ResponseEntity<OutgoingJwtDTO> auth(@RequestBody IncomingAdminDTO loginDTO)
-            throws AdminNotFoundException { //TODO: Admin Not Found Exception
+            throws AdminNotFoundException {
         OutgoingJwtDTO jwtAdminDTO = authService.login(loginDTO);
         return ResponseEntity.status(201).body(jwtAdminDTO);
     }

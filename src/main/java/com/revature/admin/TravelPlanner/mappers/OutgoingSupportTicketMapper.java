@@ -2,8 +2,6 @@ package com.revature.admin.TravelPlanner.mappers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
-import com.revature.admin.TravelPlanner.enums.TicketStatus;
-import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import org.springframework.stereotype.Component;
 

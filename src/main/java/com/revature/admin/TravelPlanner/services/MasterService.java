@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @PreAuthorize("hasRole('ROLE_MASTER')")
 public class MasterService extends AdminService{
 
-    public Admin getAdminById(int adminId) throws CustomException {
+    public Admin getAdminById(UUID adminId) throws CustomException {
         Optional<Admin> admin = adminDAO.findById(adminId);
         if(admin.isPresent()){
             return admin.get();
@@ -59,7 +60,7 @@ public class MasterService extends AdminService{
     }
 
 
-    public String deleteAdmin(int adminId) throws CustomException{
+    public String deleteAdmin(UUID adminId) throws CustomException{
         Admin admin = adminDAO.findById(adminId)
                 .orElseThrow(()->new AdminNotFoundException(adminId));
         adminDAO.delete(admin);

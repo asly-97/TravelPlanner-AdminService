@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/master/admin")
@@ -39,7 +40,7 @@ public class MasterController extends AdminController{
     }
 
     @DeleteMapping("/delete/{adminId}")
-    public ResponseEntity<String> deleteAdmin(@PathVariable int adminId) throws CustomException{
+    public ResponseEntity<String> deleteAdmin(@PathVariable UUID adminId) throws CustomException{
         String message = masterService.deleteAdmin(adminId);
         return ResponseEntity.accepted().body(message);
     }

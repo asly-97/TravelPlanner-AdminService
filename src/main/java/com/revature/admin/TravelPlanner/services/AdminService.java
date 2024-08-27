@@ -45,7 +45,7 @@ public class AdminService {
         if(newAdmin.containsKey("email")) {
             Optional<Admin> admin2 = adminDAO.findByEmail(newAdmin.get("email"));
             if(admin2.isPresent()){
-                if(admin2.get().getAdminId() != 0){ // TODO: replace 0 with authController.getAuthenticatedAdmin().getAdminId
+                if(admin2.get().getAdminId() != authService.getLoggedInAdmin().getAdminId()){
                     throw new EmailAlreadyExistException("Another admin already uses this email address");
                 }
             }

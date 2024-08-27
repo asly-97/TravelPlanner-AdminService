@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,7 +37,7 @@ public class AdminController {
         }
     }
 
-    private int loggedInAdminId() throws CustomException {
+    private UUID loggedInAdminId() throws CustomException {
 
         Admin authAdmin = authController.getAuthenticatedAdmin();
 
@@ -44,7 +45,7 @@ public class AdminController {
             return authAdmin.getAdminId();
         }
 
-        return 0;
+        return null;
 
     }
 

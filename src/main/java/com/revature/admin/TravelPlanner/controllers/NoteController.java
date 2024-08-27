@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/admin/note")
 @CrossOrigin
@@ -21,7 +23,7 @@ public class NoteController {
 
     @PatchMapping("/{noteId}")
     public ResponseEntity<Note> updateNoteText(
-            @PathVariable int noteId,
+            @PathVariable UUID noteId,
             @RequestBody String updatedText) throws CustomException {
 
         Note updatedNote = noteService.updateNoteText(noteId,updatedText);
@@ -30,7 +32,7 @@ public class NoteController {
     }
 
     @DeleteMapping("/{noteId}")
-    public ResponseEntity<String> deleteNote(@PathVariable int noteId) throws CustomException{
+    public ResponseEntity<String> deleteNote(@PathVariable UUID noteId) throws CustomException{
         String message = noteService.deleteNote(noteId);
         return ResponseEntity.accepted().body(message);
     }

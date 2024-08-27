@@ -70,7 +70,7 @@ public class AuthService {
 
         } else {
             // If login was unsuccessful, throw a UserNotFoundException with the provided email
-            throw new AdminNotFoundException(adminDTO.getEmail());
+            throw AdminNotFoundException.withEmail(adminDTO.getEmail());
         }
     }
 

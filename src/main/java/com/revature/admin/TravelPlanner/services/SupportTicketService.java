@@ -1,6 +1,5 @@
 package com.revature.admin.TravelPlanner.services;
 
-import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
@@ -10,19 +9,13 @@ import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
-import com.revature.admin.TravelPlanner.mappers.StatusMapper;
-import com.revature.admin.TravelPlanner.mappers.TypeMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -54,7 +47,7 @@ public class SupportTicketService {
     //
 
     //Method to return a SupportTicket by its id with the associated User using userId and email
-    public OutgoingSupportTicketDTO getSupportTicketById(int id) throws SupportTicketNotFoundException {
+    public OutgoingSupportTicketDTO getSupportTicketById(UUID id) throws SupportTicketNotFoundException {
 
         Optional<SupportTicket> st = ticketDAO.findById(id);
 
@@ -104,7 +97,7 @@ public class SupportTicketService {
 
 
     // Resolve a Support Ticket
-    public OutgoingSupportTicketDTO resolve(int ticketId, String noteText) throws SupportTicketNotFoundException,
+    public OutgoingSupportTicketDTO resolve(UUID ticketId, String noteText) throws SupportTicketNotFoundException,
             AdminNotFoundException {
 
         SupportTicket ticket = ticketDAO
@@ -138,7 +131,7 @@ public class SupportTicketService {
     //
 
     //Method to delete a Support Ticket from the Database
-    public OutgoingSupportTicketDTO delete(int id) throws SupportTicketNotFoundException {
+    public OutgoingSupportTicketDTO delete(UUID id) throws SupportTicketNotFoundException {
 
         Optional<SupportTicket> toDeleteTicket = ticketDAO.findById(id);
 

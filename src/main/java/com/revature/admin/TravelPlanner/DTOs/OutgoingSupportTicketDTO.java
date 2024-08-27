@@ -5,12 +5,13 @@ import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class OutgoingSupportTicketDTO {
 
     //Model Variables
-    private int supportTicketId;
-    private int userId;
+    private UUID supportTicketId;
+    private UUID userId;
     private String description;
     private TicketStatus status;
     private TicketType type;
@@ -18,8 +19,8 @@ public class OutgoingSupportTicketDTO {
     private Date resolvedDate;
     private OutgoingNoteDTO note;
 
-    public OutgoingSupportTicketDTO(int supportTicketId,
-                                    int userId,
+    public OutgoingSupportTicketDTO(UUID supportTicketId,
+                                    UUID userId,
                                     String description,
                                     TicketStatus status,
                                     TicketType type,
@@ -36,19 +37,19 @@ public class OutgoingSupportTicketDTO {
         this.note = note;
     }
 
-    public int getSupportTicketId() {
+    public UUID getSupportTicketId() {
         return supportTicketId;
     }
 
-    public void setSupportTicketId(int supportTicketId) {
+    public void setSupportTicketId(UUID supportTicketId) {
         this.supportTicketId = supportTicketId;
     }
 
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
