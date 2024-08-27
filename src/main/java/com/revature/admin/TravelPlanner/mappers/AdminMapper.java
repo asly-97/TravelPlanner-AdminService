@@ -22,7 +22,8 @@ public class AdminMapper {
                 admin.getFirstName(),
                 admin.getLastName(),
                 admin.getEmail(),
-                notes
+                notes,
+                admin.getCreatedAt()
         );
     }
 

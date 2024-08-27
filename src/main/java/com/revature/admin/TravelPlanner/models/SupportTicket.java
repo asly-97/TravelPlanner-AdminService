@@ -5,6 +5,7 @@ import com.revature.admin.TravelPlanner.enums.TicketType;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "support_tickets")
@@ -31,18 +32,18 @@ public class SupportTicket {
     @Column(nullable = false)
     private TicketType type;
 
-    @Column
-    private long createdAt;
+    @Column(nullable = false)
+    private Date createdAt;
 
     @Column
-    private long resolvedAt;
+    private Date resolvedAt;
 
 
     // This method is executed before persisting the ticket into the database
     @PrePersist
     private void onCreate(){
         // Sets the timestamps for when the ticket is created
-        createdAt = Instant.now().toEpochMilli();
+        createdAt = new Date();
 
 
         // Sets PENDING as the default status when the ticket is created for the first time
@@ -59,13 +60,12 @@ public class SupportTicket {
 
     public SupportTicket() {}
 
-    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type, long createdAt, long resolvedAt) {
+    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type, Date resolvedAt) {
         this.supportTicketId = supportTicketId;
         this.user = user;
         this.status = status;
         this.description = description;
         this.type = type;
-        this.createdAt = createdAt;
         this.resolvedAt = resolvedAt;
     }
 
@@ -109,19 +109,16 @@ public class SupportTicket {
         this.type = type;
     }
 
-    public long getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
 
-    public long getResolvedAt() {
+    public Date getResolvedAt() {
         return resolvedAt;
     }
 
-    public void setResolvedAt(long resolvedAt) {
+    public void setResolvedAt(Date resolvedAt) {
         this.resolvedAt = resolvedAt;
     }
 

@@ -3,6 +3,7 @@ package com.revature.admin.TravelPlanner.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -32,10 +33,14 @@ public class Admin {
     @Column(nullable = false)
     private boolean master;
 
+    @Column(nullable = false)
+    private Date createdAt;
+
     @PrePersist
     private void onCreate() {
         // Set master to false by default upon creation
         master = false;
+        createdAt = new Date();
     }
 
 
@@ -114,7 +119,10 @@ public class Admin {
         this.notes = notes;
     }
 
-    //toString
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
     public String toString() {
         return "Admin{" +
@@ -123,6 +131,9 @@ public class Admin {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", master=" + master +
+                ", createdAt=" + createdAt +
+                ", notes=" + notes +
                 '}';
     }
 }

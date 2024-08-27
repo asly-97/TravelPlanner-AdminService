@@ -1,5 +1,6 @@
 package com.revature.admin.TravelPlanner.DTOs;
 
+import java.util.Date;
 import java.util.List;
 
 public class OutgoingAdminDTO {
@@ -11,19 +12,21 @@ public class OutgoingAdminDTO {
     private String lastName;
     private String email;
     private List<String> notes;
+    private Date createdAt;
 
 
     //Constructors
     public OutgoingAdminDTO() {
     }
 
-    public OutgoingAdminDTO(int adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes) {
+    public OutgoingAdminDTO(int adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes, Date createdAt) {
         this.adminId = adminId;
         this.isMaster = isMaster;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.notes = notes;
+        this.createdAt = createdAt;
     }
 
     public int getAdminId() {
@@ -75,13 +78,24 @@ public class OutgoingAdminDTO {
         isMaster = master;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "OutgoingAdminDTO{" +
-                "lastName='" + lastName + '\'' +
+                "adminId=" + adminId +
+                ", isMaster=" + isMaster +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", notes=" + notes +
-                ", isMaster=" + isMaster +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

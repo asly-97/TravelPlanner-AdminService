@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,7 +124,7 @@ public class SupportTicketService {
 
         // Resolving the ticket
         ticket.setStatus(TicketStatus.RESOLVED);
-        ticket.setResolvedAt(Instant.now().toEpochMilli());
+        ticket.setResolvedAt(new Date());
         ticketDAO.save(ticket); // Persist the changes
 
         OutgoingNoteDTO noteDTO = noteMapper.toDto(note);
