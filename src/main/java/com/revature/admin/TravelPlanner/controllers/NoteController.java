@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/note")
+@RequestMapping("/note")
 @CrossOrigin
 public class NoteController {
 

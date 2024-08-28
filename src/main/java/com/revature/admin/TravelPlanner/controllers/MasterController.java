@@ -27,18 +27,18 @@ public class MasterController extends AdminController{
     }
 
     //Mappings
-    @GetMapping("/list")
+    @GetMapping
     public List<OutgoingAdminDTO> getAllAdmins() {
         return masterService.getAllAdmins();
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Admin> createAdmin(@RequestBody @Valid Admin admin)throws CustomException {
         Admin returningAdmin =  masterService.createAdmin(admin);
         return ResponseEntity.status(201).body(returningAdmin);
     }
 
-    @DeleteMapping("/delete/{adminId}")
+    @DeleteMapping("/{adminId}")
     public ResponseEntity<String> deleteAdmin(@PathVariable int adminId) throws CustomException{
         String message = masterService.deleteAdmin(adminId);
         return ResponseEntity.accepted().body(message);

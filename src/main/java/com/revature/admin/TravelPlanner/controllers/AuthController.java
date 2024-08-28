@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/login")
 @CrossOrigin(origins = "*")
 public class AuthController {
 
@@ -21,7 +22,7 @@ public class AuthController {
     @Autowired
     MasterService adminService;
 
-    @PostMapping("/admin/login")
+    @PostMapping
     public ResponseEntity<OutgoingJwtDTO> auth(@RequestBody IncomingAdminDTO loginDTO)
             throws AdminNotFoundException { //TODO: Admin Not Found Exception
         OutgoingJwtDTO jwtAdminDTO = authService.login(loginDTO);
