@@ -63,7 +63,7 @@ public class AuthService {
             Admin authAdmin = adminDAO.findByEmail(adminDTO.getEmail()).get();
 
             // Generate a JWT token for the authenticated admin
-            String token = jwtProvider.generateToken(authAdmin.getAdminId());
+            String token = jwtProvider.generateToken(authAdmin);
 
             // Return a DTO containing the JWT token, admin ID, and email
             return outgoingJWTMapper.toDto(authAdmin,token);
