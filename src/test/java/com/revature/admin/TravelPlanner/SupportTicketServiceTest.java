@@ -7,6 +7,7 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
+import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
@@ -125,8 +126,26 @@ public class SupportTicketServiceTest {
         verify(noteDAO, times(1)).findBySupportTicketSupportTicketId(ticketId);
         verify(noteMapper, times(1)).toDto(note);
         verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
-        
+
+    }
+
+    @Test
+    public void testSupportTicketNotFoundById() {
+        //given
+        final UUID id = UUID.randomUUID();
+
+        when(ticketDAO.findById(id)).thenReturn(Optional.empty());
+
+        //when
+        SupportTicketNotFoundException thrown = assertThrows(
+                SupportTicketNotFoundException.class, () -> supportService.getSupportTicketById(id)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("Support Ticket with Id: " + id + " Not Found."));
+        verify(ticketDAO, times(1)).findById(id);
+
     }
 
 
-}
+}//End of SupportTicketServiceTest
