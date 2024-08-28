@@ -77,7 +77,7 @@ public class SupportTicketController {
 
     //Delete a Support Ticket from the DB
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(UUID id){
+    public ResponseEntity<?> delete(@PathVariable UUID id){
 
         try{
             return ResponseEntity.ok(sts.delete(id));
