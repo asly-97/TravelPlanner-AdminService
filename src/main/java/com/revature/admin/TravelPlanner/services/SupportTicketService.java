@@ -1,17 +1,21 @@
 package com.revature.admin.TravelPlanner.services;
 
+import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
+import com.revature.admin.TravelPlanner.DAOs.UserDAO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
+import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
+import com.revature.admin.TravelPlanner.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,26 +25,27 @@ import java.util.*;
 @Service
 public class SupportTicketService {
 
-    @Autowired
+    //Because note is OneToOne, creating static object to save memory
+    private static OutgoingNoteDTO noteDTO = null;
+
+    private SupportTicketDAO ticketDAO;
+    private NoteDAO noteDAO;
+    private UserDAO userDAO;
+
     private AuthService authService;
 
-    @Autowired
-    private SupportTicketDAO ticketDAO;
-
-    @Autowired
-    private NoteDAO noteDAO;
-
-    @Autowired
-    private NoteService noteService;
-
-    @Autowired
     private OutgoingSupportTicketMapper ticketMapper;
-
-    @Autowired
     private OutgoingNoteMapper noteMapper;
 
-
-
+    @Autowired
+    public SupportTicketService(SupportTicketDAO ticketDAO, NoteDAO noteDAO, UserDAO userDAO, AuthService authService, OutgoingSupportTicketMapper ticketMapper, OutgoingNoteMapper noteMapper) {
+        this.ticketDAO = ticketDAO;
+        this.noteDAO = noteDAO;
+        this.userDAO = userDAO;
+        this.authService = authService;
+        this.ticketMapper = ticketMapper;
+        this.noteMapper = noteMapper;
+    }
 
     //-------------Get Methods------------
     //
@@ -54,13 +59,11 @@ public class SupportTicketService {
         if (st.isPresent()) {
 
             // Get corresponding note if exists
-            Note note = noteService.getBySupportTicketId(id);
-            OutgoingNoteDTO noteDTO = null;
-            if(note != null){
-                noteDTO = noteMapper.toDto(note);
-            }
-
-            return ticketMapper.toDto(st.get(),noteDTO);
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+            note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
+            OutgoingSupportTicketDTO outgoingTicket = ticketMapper.toDto(st.get(), noteDTO);
+            noteDTO = null;
+            return outgoingTicket;
 
         } else {
             throw new SupportTicketNotFoundException(id);
@@ -78,16 +81,42 @@ public class SupportTicketService {
 
         for (SupportTicket st: stl) {
             // Get corresponding note if exists
-            Note note = noteService.getBySupportTicketId(st.getSupportTicketId());
-            OutgoingNoteDTO noteDTO = null;
-            if(note != null){
-                noteDTO = noteMapper.toDto(note);
-            }
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(st.getSupportTicketId());
+            note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
             returnList.add(ticketMapper.toDto(st,noteDTO));
+            noteDTO = null;
 
         }
 
         return returnList;
+
+    }
+
+    //Return a list of all Support Tickets submitted by a User
+    public List<OutgoingSupportTicketDTO> getAllSupportTicketsByUserId(UUID id) throws UserNotFoundException{
+
+        Optional<User> user = userDAO.findById(id);
+
+        if (user.isPresent()){
+
+            List<SupportTicket> stList = ticketDAO.findAllByUserUserId(id);
+            List<OutgoingSupportTicketDTO> outgoingTicketList = new ArrayList<OutgoingSupportTicketDTO>();
+            for (SupportTicket st: stList) {
+
+                Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+                note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
+                outgoingTicketList.add(ticketMapper.toDto(st, noteDTO));
+                noteDTO = null;
+
+            }
+
+            return outgoingTicketList;
+
+        } else {
+            throw new UserNotFoundException(id);
+
+        }
+
 
     }
 
@@ -120,9 +149,7 @@ public class SupportTicketService {
         ticket.setResolvedAt(new Date());
         ticketDAO.save(ticket); // Persist the changes
 
-        OutgoingNoteDTO noteDTO = noteMapper.toDto(note);
-
-        return ticketMapper.toDto(ticket,noteDTO);
+        return ticketMapper.toDto(ticket,noteMapper.toDto(note));
     }
 
 
@@ -138,14 +165,16 @@ public class SupportTicketService {
         if (toDeleteTicket.isPresent()) {
 
             // Get corresponding note if exists
-            Note note = noteService.getBySupportTicketId(id);
-            OutgoingNoteDTO noteDTO = null;
-            if(note != null){
-                noteDTO = noteMapper.toDto(note);
-                noteDAO.delete(note);
-            }
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+            note.ifPresent(value -> {
+                noteDTO = noteMapper.toDto(value);
+                noteDAO.delete(value);
+            });
+
             ticketDAO.delete(toDeleteTicket.get());
-            return ticketMapper.toDto(toDeleteTicket.get(),noteDTO);
+            OutgoingSupportTicketDTO outgoingTicket = ticketMapper.toDto(toDeleteTicket.get(),noteDTO);
+            noteDTO = null;
+            return outgoingTicket;
 
         } else {
             throw new SupportTicketNotFoundException(id);

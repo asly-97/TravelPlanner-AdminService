@@ -14,4 +14,5 @@ public interface SupportTicketDAO extends JpaRepository<SupportTicket, UUID> {
 
     List<SupportTicket> findAllByType(TicketType type);
 
+    List<SupportTicket> findAllByUserUserId(UUID id);
 }
