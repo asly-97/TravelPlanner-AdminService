@@ -8,6 +8,8 @@ import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.security.AdminUserDetails;
 import com.revature.admin.TravelPlanner.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +17,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
+    Logger log = LoggerFactory.getLogger(AuthService.class);
     // Inject the admin-specific authentication manager
     @Autowired
     //@Qualifier("adminAuthManager")
@@ -36,7 +41,7 @@ public class AuthService {
 
     // Method to handle login for admin users
     public OutgoingJwtDTO login(IncomingAdminDTO adminDTO) throws AdminNotFoundException {
-
+        log.debug("Method 'login' invoked with adminDTO: {}", adminDTO.toString());
         // Extract email from the incoming DTO
         String email = adminDTO.getEmail();
 
@@ -54,7 +59,8 @@ public class AuthService {
         } catch (Exception e) {
             // Print the authentication exception message in case of failure
             // TODO: Custom Exception
-            System.out.println("Authentication Exception: " + e.getMessage());
+            log.warn("Authentication Exception: {}", e.getMessage());
+            //System.out.println("Authentication Exception: " + e.getMessage());
         }
 
         // Check if authentication was successful and the user is authenticated
@@ -66,7 +72,9 @@ public class AuthService {
             String token = jwtProvider.generateToken(authAdmin.getAdminId());
 
             // Return a DTO containing the JWT token, admin ID, and email
-            return outgoingJWTMapper.toDto(authAdmin,token);
+            OutgoingJwtDTO outgoingJwtDTO = outgoingJWTMapper.toDto(authAdmin,token);
+            log.debug("Method 'login' returning: {}", outgoingJwtDTO.toString());
+            return outgoingJwtDTO;
 
         } else {
             // If login was unsuccessful, throw a UserNotFoundException with the provided email
@@ -75,6 +83,7 @@ public class AuthService {
     }
 
     public Admin getLoggedInAdmin() throws AdminNotFoundException {
+        log.debug("Method 'getLoggedInAdmin' invoked");
         // Get the authentication object
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -86,11 +95,19 @@ public class AuthService {
             // Get the username(email) of the authenticated user
             AdminUserDetails adminUserDetails = (AdminUserDetails) authentication.getPrincipal();
             String email =  adminUserDetails.getUsername();
-            System.out.println("Requested Auth Admin: "+email);
 
-            return adminDAO.findByEmail(email)
+            //Replaced following with logging
+            //System.out.println("Requested Auth Admin: "+email);
+
+
+            Admin admin = adminDAO.findByEmail(email)
                     .orElseThrow(()->AdminNotFoundException.withEmail(email));
+
+            log.debug("Method 'getLoggedInAdmin' returning: {}", admin.toString());
+            return admin;
+
         }
+        log.warn("Method 'getLoggedInAdmin' returning null");
         return null;
     }
 

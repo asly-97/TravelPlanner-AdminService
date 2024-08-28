@@ -7,6 +7,8 @@ import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ import java.util.List;
 @RequestMapping("/support")
 @CrossOrigin                    //TODO::Create extra security safety
 public class SupportTicketController {
-
+    Logger log = LoggerFactory.getLogger(SupportTicketController.class);
     //Model Variables
     private SupportTicketService sts;
 
@@ -36,6 +38,7 @@ public class SupportTicketController {
     //Return Support Ticket by Id
     @GetMapping
     public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") int id ) {
+        log.debug("Endpoint GET ./support reached, id={}",id);
 
         try {
 
@@ -43,6 +46,7 @@ public class SupportTicketController {
             return ResponseEntity.ok(returnSupportTicket);
 
         } catch (SupportTicketNotFoundException e) {
+            log.warn("SupportTicketNotFoundException was thrown: {}", e.getMessageText());
             return ResponseEntity.status(400).body(e.getMessageText());
 
         }
@@ -52,6 +56,7 @@ public class SupportTicketController {
     //Get All Support Tickets
     @GetMapping("/all")
     public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
+        log.debug("Endpoint GET ./support/all reached");
         return ResponseEntity.ok(sts.getAlSupportTickets());
     }
 
@@ -66,6 +71,7 @@ public class SupportTicketController {
     public ResponseEntity<OutgoingSupportTicketDTO> resolveTicket(
             @PathVariable int ticketId,
             @RequestBody String noteText) throws SupportTicketNotFoundException, AdminNotFoundException {
+        log.debug("Endpoint PATCH ./support/{} reached",ticketId);
 
         OutgoingSupportTicketDTO resolvedTicket = sts.resolve(ticketId, noteText);
 
@@ -79,11 +85,13 @@ public class SupportTicketController {
     //Delete a Support Ticket from the DB
     @DeleteMapping("/{ticketId}")
     public ResponseEntity<?> delete(int id){
+        log.debug("Endpoint DELETE ./support/{} reached",id);
 
         try{
             return ResponseEntity.ok(sts.delete(id));
 
         } catch (SupportTicketNotFoundException e) {
+            log.warn("SupportTicketNotFoundException was thrown: {}", e.getMessageText());
             return ResponseEntity.ok(e.getMessageText());
 
         }
@@ -93,6 +101,7 @@ public class SupportTicketController {
     // handles all the custom exceptions
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException( CustomException e){
+        log.warn("Exception was thrown: {}", e.getMessageText());
         return ResponseEntity.status(e.getStatus()).body(e.getMessageText());
     }
 

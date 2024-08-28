@@ -8,6 +8,8 @@ import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
 import com.revature.admin.TravelPlanner.mappers.AdminMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
+
+    Logger log = LoggerFactory.getLogger(AdminService.class);
 
     @Autowired
     protected AuthService authService;
@@ -34,6 +38,7 @@ public class AdminService {
 
 
     public Admin updateLoggedInAdmin(Map<String, String> newAdmin) throws CustomException {
+        log.debug("Method 'updateLoggedInAdmin' invoked with newAdmin: {}", newAdmin.toString());
         Admin admin = authService.getLoggedInAdmin();
 
         if(newAdmin.containsKey("firstName")) {
@@ -55,7 +60,10 @@ public class AdminService {
             admin.setFirstName(newAdmin.get("password"));
         }
 
-        return adminDAO.save(admin);
+        Admin returningAdmin = adminDAO.save(admin);
+        log.debug("Method 'updateLoggedInAdmin' returning: {}",returningAdmin);
+        return returningAdmin;
+
     }
 }
 

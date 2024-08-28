@@ -40,4 +40,17 @@ public class OutgoingJwtDTO {
     public String getToken() {
         return token;
     }
+
+    //Generated toString for logging purposes
+    @Override
+    public String toString() {
+        return "OutgoingJwtDTO{" +
+                "adminId=" + adminId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", isMaster=" + isMaster +
+                ", token='" + token + '\'' +
+                '}';
+    }
 }
