@@ -147,5 +147,134 @@ public class SupportTicketServiceTest {
 
     }
 
+    @Test
+    public void testGetAllSupportTickets() {
+        //given
+        final Date createdAt = new Date(2024, Calendar.AUGUST, 13);
+        final UUID adminId = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+        final UUID ticketId1 = UUID.randomUUID();
+        final UUID ticketId2 = UUID.randomUUID();
+        final UUID noteId1 = UUID.randomUUID();
+        final UUID noteId2 = UUID.randomUUID();
+
+        Admin admin = new Admin();
+        admin.setAdminId(adminId);
+        admin.setFirstName("Bob");
+        admin.setLastName("Smith");
+        admin.setEmail("bobsmith@revature.net");
+        admin.setPassword("password");
+        admin.setCreatedAt(createdAt);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("johndoe@revature.net");
+        user.setPassword("password");
+        user.setCreatedAt(createdAt);
+
+        SupportTicket ticket1 = new SupportTicket();
+        ticket1.setSupportTicketId(ticketId1);
+        ticket1.setUser(user);
+        ticket1.setDescription("Description");
+        ticket1.setType(TicketType.GENERAL);
+        ticket1.setStatus(TicketStatus.PENDING);
+        ticket1.setCreatedAt(createdAt);
+        ticket1.setResolvedAt(null);
+
+        SupportTicket ticket2 = new SupportTicket();
+        ticket2.setSupportTicketId(ticketId2);
+        ticket2.setUser(user);
+        ticket2.setDescription("Description");
+        ticket2.setType(TicketType.GENERAL);
+        ticket2.setStatus(TicketStatus.PENDING);
+        ticket2.setCreatedAt(createdAt);
+        ticket2.setResolvedAt(null);
+
+        List<SupportTicket> tickets = new ArrayList<SupportTicket>();
+        tickets.add(ticket1);
+        tickets.add(ticket2);
+
+        Note note1 = new Note();
+        note1.setNoteId(noteId1);
+        note1.setSupportTicket(ticket1);
+        note1.setText("Note Text");
+        note1.setAdmin(admin);
+        note1.setCreatedAt(createdAt);
+
+        Note note2 = new Note();
+        note2.setNoteId(noteId2);
+        note2.setSupportTicket(ticket2);
+        note2.setText("Note Text");
+        note2.setAdmin(admin);
+        note2.setCreatedAt(createdAt);
+
+        List<Note> notes = new ArrayList<Note>();
+        notes.add(note1);
+        notes.add(note2);
+        admin.setNotes(notes);
+
+        OutgoingNoteDTO outgoingNote1 = new OutgoingNoteDTO();
+        outgoingNote1.setNoteId(noteId1);
+        outgoingNote1.setAdminId(adminId);
+        outgoingNote1.setTicketId(ticketId1);
+        outgoingNote1.setText(note1.getText());
+        outgoingNote1.setCreatedAt(createdAt);
+
+        OutgoingNoteDTO outgoingNote2 = new OutgoingNoteDTO();
+        outgoingNote2.setNoteId(noteId2);
+        outgoingNote2.setAdminId(adminId);
+        outgoingNote2.setTicketId(ticketId2);
+        outgoingNote2.setText(note2.getText());
+        outgoingNote2.setCreatedAt(createdAt);
+
+        OutgoingSupportTicketDTO outgoingTicket1 = new OutgoingSupportTicketDTO();
+        outgoingTicket1.setSupportTicketId(ticketId1);
+        outgoingTicket1.setUserId(userId);
+        outgoingTicket1.setDescription(ticket1.getDescription());
+        outgoingTicket1.setStatus(ticket1.getStatus());
+        outgoingTicket1.setType(ticket1.getType());
+        outgoingTicket1.setCreatedAt(ticket1.getCreatedAt());
+        outgoingTicket1.setResolvedDate(ticket1.getResolvedAt());
+        outgoingTicket1.setNote(outgoingNote1);
+
+        OutgoingSupportTicketDTO outgoingTicket2 = new OutgoingSupportTicketDTO();
+        outgoingTicket2.setSupportTicketId(ticketId2);
+        outgoingTicket2.setUserId(userId);
+        outgoingTicket2.setDescription(ticket2.getDescription());
+        outgoingTicket2.setStatus(ticket2.getStatus());
+        outgoingTicket2.setType(ticket2.getType());
+        outgoingTicket2.setCreatedAt(ticket2.getCreatedAt());
+        outgoingTicket2.setResolvedDate(ticket2.getResolvedAt());
+        outgoingTicket2.setNote(outgoingNote2);
+
+        List<OutgoingSupportTicketDTO> outgoingTickets = new ArrayList<OutgoingSupportTicketDTO>();
+        outgoingTickets.add(outgoingTicket1);
+        outgoingTickets.add(outgoingTicket2);
+
+        when(ticketDAO.findAll()).thenReturn(tickets);
+        when(noteDAO.findBySupportTicketSupportTicketId(ticketId1)).thenReturn(Optional.of(note1));
+        when(noteDAO.findBySupportTicketSupportTicketId(ticketId2)).thenReturn(Optional.of(note2));
+        when(noteMapper.toDto(note1)).thenReturn(outgoingNote1);
+        when(noteMapper.toDto(note2)).thenReturn(outgoingNote2);
+        when(ticketMapper.toDto(ticket1,outgoingNote1)).thenReturn(outgoingTicket1);
+        when(ticketMapper.toDto(ticket2,outgoingNote2)).thenReturn(outgoingTicket2);
+
+        //when
+        List<OutgoingSupportTicketDTO> returningTickets = supportService.getAlSupportTickets();
+
+        //then
+        assertEquals(returningTickets, outgoingTickets);
+        verify(ticketDAO, times(1)).findAll();
+        verify(noteDAO, times(1)).findBySupportTicketSupportTicketId(ticketId1);
+        verify(noteDAO, times(1)).findBySupportTicketSupportTicketId(ticketId2);
+        verify(noteMapper, times(1)).toDto(note1);
+        verify(noteMapper, times(1)).toDto(note2);
+        verify(ticketMapper, times(1)).toDto(ticket1, outgoingNote1);
+        verify(ticketMapper, times(1)).toDto(ticket2, outgoingNote2);
+        
+    }
+
 
 }//End of SupportTicketServiceTest
