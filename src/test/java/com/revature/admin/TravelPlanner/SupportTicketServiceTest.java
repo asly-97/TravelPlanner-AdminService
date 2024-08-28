@@ -273,7 +273,7 @@ public class SupportTicketServiceTest {
         verify(noteMapper, times(1)).toDto(note2);
         verify(ticketMapper, times(1)).toDto(ticket1, outgoingNote1);
         verify(ticketMapper, times(1)).toDto(ticket2, outgoingNote2);
-        
+
     }
 
 
