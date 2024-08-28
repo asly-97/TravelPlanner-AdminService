@@ -14,7 +14,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/admin/support")
+@RequestMapping("/support")
 @CrossOrigin                    //TODO::Create extra security safety
 public class SupportTicketController {
 
@@ -49,7 +49,7 @@ public class SupportTicketController {
     }
 
     //Get All Support Tickets
-    @GetMapping("/get/all")
+    @GetMapping("/all")
     public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
         return ResponseEntity.ok(sts.getAlSupportTickets());
     }
@@ -61,7 +61,7 @@ public class SupportTicketController {
     //Resolve a Support Ticket
     // Resolving a ticket can by sending a request to this endpoint
     // And include an optional note text
-    @PatchMapping("/resolve/{ticketId}")
+    @PatchMapping("/{ticketId}")
     public ResponseEntity<OutgoingSupportTicketDTO> resolveTicket(
             @PathVariable UUID ticketId,
             @RequestBody String noteText) throws SupportTicketNotFoundException, AdminNotFoundException {
@@ -76,7 +76,7 @@ public class SupportTicketController {
     */
 
     //Delete a Support Ticket from the DB
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{ticketId}")
     public ResponseEntity<?> delete(@PathVariable UUID id){
 
         try{

@@ -21,7 +21,7 @@ public class AuthController {
     @Autowired
     MasterService adminService;
 
-    @PostMapping("/admin/login")
+    @PostMapping("/login")
     public ResponseEntity<OutgoingJwtDTO> auth(@RequestBody IncomingAdminDTO loginDTO)
             throws AdminNotFoundException {
         OutgoingJwtDTO jwtAdminDTO = authService.login(loginDTO);

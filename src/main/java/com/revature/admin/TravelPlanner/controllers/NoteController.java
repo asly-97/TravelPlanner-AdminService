@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/admin/note")
+@RequestMapping("/note")
 @CrossOrigin
 public class NoteController {
 
