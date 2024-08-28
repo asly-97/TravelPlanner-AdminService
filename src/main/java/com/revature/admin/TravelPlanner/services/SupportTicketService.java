@@ -103,7 +103,7 @@ public class SupportTicketService {
             List<OutgoingSupportTicketDTO> outgoingTicketList = new ArrayList<OutgoingSupportTicketDTO>();
             for (SupportTicket st: stList) {
 
-                Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+                Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(st.getSupportTicketId());
                 note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
                 outgoingTicketList.add(ticketMapper.toDto(st, noteDTO));
                 noteDTO = null;
