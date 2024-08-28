@@ -113,6 +113,9 @@ public class SupportTicket {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public Date getResolvedAt() {
         return resolvedAt;

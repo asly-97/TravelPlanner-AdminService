@@ -19,6 +19,9 @@ public class OutgoingSupportTicketDTO {
     private Date resolvedDate;
     private OutgoingNoteDTO note;
 
+    public OutgoingSupportTicketDTO() {
+    }
+
     public OutgoingSupportTicketDTO(UUID supportTicketId,
                                     UUID userId,
                                     String description,
@@ -95,6 +98,10 @@ public class OutgoingSupportTicketDTO {
 
     public OutgoingNoteDTO getNote() {
         return note;
+    }
+
+    public void setNote(OutgoingNoteDTO note) {
+        this.note = note;
     }
 
     @Override

@@ -11,6 +11,9 @@ public class OutgoingNoteDTO {
     private String text;
     private Date createdAt;
 
+    public OutgoingNoteDTO() {
+    }
+
     public OutgoingNoteDTO(UUID noteId, UUID adminId, UUID ticketId, String text, Date createdAt) {
         this.noteId = noteId;
         this.adminId = adminId;

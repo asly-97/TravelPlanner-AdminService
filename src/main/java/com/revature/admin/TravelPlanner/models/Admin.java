@@ -124,6 +124,10 @@ public class Admin {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Admin{" +
