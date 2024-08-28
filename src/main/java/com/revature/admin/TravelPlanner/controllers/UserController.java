@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/admin/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
