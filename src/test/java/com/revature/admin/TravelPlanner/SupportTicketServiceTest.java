@@ -8,6 +8,7 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
+import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
@@ -405,6 +406,22 @@ public class SupportTicketServiceTest {
         verify(noteMapper, times(1)).toDto(note2);
         verify(ticketMapper, times(1)).toDto(ticket2, outgoingNote2);
 
+    }
+
+    @Test
+    public void testUserNotFound() {
+        //given
+        final UUID id = UUID.randomUUID();
+
+        when(userDAO.findById(id)).thenReturn(Optional.empty());
+
+        //when
+        UserNotFoundException thrown = assertThrows(
+                UserNotFoundException.class, () -> supportService.getAllSupportTicketsByUserId(id)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("User with ID:" + id + " Not Found."));
     }
 
 }//End of SupportTicketServiceTest
