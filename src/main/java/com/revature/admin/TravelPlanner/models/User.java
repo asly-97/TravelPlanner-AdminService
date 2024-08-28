@@ -38,13 +38,12 @@ public class User {
 
     /*TODO::Date() creates Date obj w/ current date and time. Date().getTime() returns a long value of the generated Date.
         Potentially easier to implement then creating a String when an account is created. */
+
     @Column(nullable = false)
-    //private String dateCreated;
     private Date createdAt;
     // This method is executed before persisting the user account into the database
     @PrePersist
     private void onCreate(){
-        // Sets the timestamps for when the user account is created
         createdAt = new Date();
     }
 
@@ -55,13 +54,12 @@ public class User {
     */
     public User() {}
 
-    public User(UUID userId, String firstName, String lastName, String password, String email, Date dateCreated) {
+    public User(UUID userId, String firstName, String lastName, String password, String email) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
-        this.createdAt = dateCreated;
     }
 
     public UUID getUserId() {
@@ -100,6 +98,9 @@ public class User {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getEmail() { return email; }
 
@@ -113,7 +114,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 
