@@ -8,6 +8,7 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
+import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
@@ -529,6 +530,28 @@ public class SupportTicketServiceTest {
         //then
         assertTrue(thrown.getMessage().contains("Support Ticket with Id: " + ticketId + " Not Found."));
         verify(ticketDAO, times(1)).findById(ticketId);
+
+    }
+
+    @Test
+    public void testAdminNotFoundException() throws AdminNotFoundException {
+        //given
+        final UUID id = UUID.randomUUID();
+        final String email = "test@test.com";
+        final String text = "Text";
+
+        when(ticketDAO.findById(id)).thenReturn(Optional.of(new SupportTicket()));
+        when(authService.getLoggedInAdmin()).thenThrow(AdminNotFoundException.withEmail(email));
+
+        //when
+        AdminNotFoundException thrown = assertThrows(
+                AdminNotFoundException.class, () -> supportService.resolve(id, text)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("Admin with email "+email+" Not Found."));
+        verify(ticketDAO, times(1)).findById(id);
+        verify(authService, times(1)).getLoggedInAdmin();
 
     }
 
