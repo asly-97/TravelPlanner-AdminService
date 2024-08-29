@@ -77,10 +77,10 @@ public class SupportTicketController {
 
     //Delete a Support Ticket from the DB
     @DeleteMapping("/{ticketId}")
-    public ResponseEntity<?> delete(@PathVariable UUID id){
+    public ResponseEntity<?> delete(@PathVariable UUID ticketId){
 
         try{
-            return ResponseEntity.ok(sts.delete(id));
+            return ResponseEntity.ok(sts.delete(ticketId));
 
         } catch (SupportTicketNotFoundException e) {
             return ResponseEntity.ok(e.getMessageText());
