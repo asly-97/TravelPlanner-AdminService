@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -33,24 +34,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // Extracting the Authorization header from the HTTP request
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String adminId = null;
+        UUID adminId = null;
 
         // Checking if the Authorization header is present and starts with "Bearer "
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             // Extracting the token from the Authorization header (excluding the "Bearer " prefix)
             token = authHeader.substring(7);
             // Extracting the admin ID from the token using the JwtTokenProvider
-            adminId = jwtProvider.extractUserId(token);
+            adminId = UUID.fromString(jwtProvider.extractUserId(token));
         }
 
         // Checking if the admin ID is not null and there is no authentication already set in the security context
         if(adminId != null && SecurityContextHolder.getContext().getAuthentication() == null){
 
             // Loading the admin user details by user ID
-            AdminUserDetails adminUserDetails = userDetailsService.loadUserByUserId(Integer.parseInt(adminId));
+            AdminUserDetails adminUserDetails = userDetailsService.loadUserByUserId(adminId);
 
             // Validating the token with the extracted admin ID
-            if(jwtProvider.validateToken(token,adminId)){
+            if(jwtProvider.validateToken(token,adminId.toString())){
 
                 // Creating an authentication token with the admin user's details and their authorities
                 UsernamePasswordAuthenticationToken authToken;

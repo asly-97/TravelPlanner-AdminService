@@ -4,15 +4,16 @@ import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
 import jakarta.persistence.*;
 
-import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "support_tickets")
 public class SupportTicket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int supportTicketId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID supportTicketId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
@@ -31,15 +32,19 @@ public class SupportTicket {
     @Column(nullable = false)
     private TicketType type;
 
-    private long createdAt;
-    private long resolvedAt;
+    @Column(nullable = false)
+    private Date createdAt;
+
+    @Column
+    private Date resolvedAt;
 
 
     // This method is executed before persisting the ticket into the database
     @PrePersist
     private void onCreate(){
         // Sets the timestamps for when the ticket is created
-        createdAt = Instant.now().toEpochMilli();
+        createdAt = new Date();
+
 
         // Sets PENDING as the default status when the ticket is created for the first time
         if(status == null){
@@ -55,19 +60,20 @@ public class SupportTicket {
 
     public SupportTicket() {}
 
-    public SupportTicket(int supportTicketId, User user, TicketStatus status, String description, TicketType type) {
+    public SupportTicket(UUID supportTicketId, User user, TicketStatus status, String description, TicketType type, Date resolvedAt) {
         this.supportTicketId = supportTicketId;
         this.user = user;
         this.status = status;
         this.description = description;
         this.type = type;
+        this.resolvedAt = resolvedAt;
     }
 
-    public int getSupportTicketId() {
+    public UUID getSupportTicketId() {
         return supportTicketId;
     }
 
-    public void setSupportTicketId(int supportTicketId) {
+    public void setSupportTicketId(UUID supportTicketId) {
         this.supportTicketId = supportTicketId;
     }
 
@@ -103,19 +109,19 @@ public class SupportTicket {
         this.type = type;
     }
 
-    public long getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public long getResolvedAt() {
+    public Date getResolvedAt() {
         return resolvedAt;
     }
 
-    public void setResolvedAt(long resolvedAt) {
+    public void setResolvedAt(Date resolvedAt) {
         this.resolvedAt = resolvedAt;
     }
 

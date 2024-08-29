@@ -1,5 +1,6 @@
 package com.revature.admin.TravelPlanner.security;
 
+import com.revature.admin.TravelPlanner.models.Admin;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -20,14 +22,22 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long jwtExpirationInMs;
 
-    public String generateToken(int userId){
+    public String generateToken(Admin admin){
 
+        //// Included user details in the token payload
+        // for enhanced authentication context
         Map<String,Object> claims = new HashMap<>();
+        claims.put("adminId",admin.getAdminId());
+        claims.put("firstName",admin.getFirstName());
+        claims.put("lastName",admin.getLastName());
+        claims.put("email",admin.getEmail());
+        claims.put("master",admin.isMaster());
+        claims.put("createdAt",admin.getCreatedAt());
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(""+userId)
+                .subject(admin.getAdminId().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+jwtExpirationInMs)) // 24 hours
                 .and()

@@ -3,6 +3,7 @@ package com.revature.admin.TravelPlanner.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 // Refactored model class name from 'Notes' to 'Note' to align with naming conventions and industry standards.
 @Entity
@@ -10,14 +11,11 @@ import java.util.Date;
 public class Note {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int noteId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID noteId;
 
-    @Column(nullable = false, name = "text")
+    @Column(nullable = true)
     private String text;
-
-    @Column(nullable = false, name = "date_created")
-    private Date dateCreated;
 
     @JoinColumn(name = "admin_id")
     // This causing an error ('com.revature.admin.models.Note.admin' is not a collection), I have to fix it
@@ -29,24 +27,21 @@ public class Note {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private SupportTicket supportTicket;
 
+    private Date createdAt;
+
+    @PrePersist
+    private void onCreate(){
+        createdAt = new Date();
+    }
+
     public Note() {
     }
 
-    public Note(int noteId, String text, Date dateCreated, Admin admin, SupportTicket supportTicket) {
+    public Note(UUID noteId, String text, Admin admin, SupportTicket supportTicket) {
         this.noteId = noteId;
-        this.text = text;
-        this.dateCreated = dateCreated;
         this.admin = admin;
         this.supportTicket = supportTicket;
-    }
-
-    // Getters and setters
-    public int getNoteId() {
-        return noteId;
-    }
-
-    public void setNoteId(int noteId) {
-        this.noteId = noteId;
+        this.text =text;
     }
 
     public String getText() {
@@ -57,12 +52,13 @@ public class Note {
         this.text = text;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    // Getters and setters
+    public UUID getNoteId() {
+        return noteId;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setNoteId(UUID noteId) {
+        this.noteId = noteId;
     }
 
     public Admin getAdmin() {
@@ -81,15 +77,22 @@ public class Note {
         this.supportTicket = supportTicket;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
                 "noteId=" + noteId +
                 ", text='" + text + '\'' +
-                ", dateCreated=" + dateCreated +
                 ", admin=" + admin +
                 ", supportTicket=" + supportTicket +
+                ", createdAt=" + createdAt +
                 '}';
     }
-
 }

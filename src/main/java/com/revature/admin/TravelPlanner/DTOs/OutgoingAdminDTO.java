@@ -1,22 +1,49 @@
 package com.revature.admin.TravelPlanner.DTOs;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class OutgoingAdminDTO {
 
     //Model variables
+    private UUID adminId;
+    private boolean isMaster = false;
+    private String firstName;
     private String lastName;
     private String email;
     private List<String> notes;
+    private Date createdAt;
+
 
     //Constructors
     public OutgoingAdminDTO() {
     }
 
-    public OutgoingAdminDTO(String lastName, String email, List<String> notes) {
+    public OutgoingAdminDTO(UUID adminId, boolean isMaster, String firstName, String lastName, String email, List<String> notes, Date createdAt) {
+        this.adminId = adminId;
+        this.isMaster = isMaster;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.notes = notes;
+        this.createdAt = createdAt;
+    }
+
+    public UUID getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(UUID adminId) {
+        this.adminId = adminId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     //Getter and Setter
@@ -44,12 +71,32 @@ public class OutgoingAdminDTO {
         this.notes = notes;
     }
 
+    public boolean isMaster() {
+        return isMaster;
+    }
+
+    public void setMaster(boolean master) {
+        isMaster = master;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "OutgoingAdminDTO{" +
-                "lastName='" + lastName + '\'' +
+                "adminId=" + adminId +
+                ", isMaster=" + isMaster +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", notes=" + notes +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

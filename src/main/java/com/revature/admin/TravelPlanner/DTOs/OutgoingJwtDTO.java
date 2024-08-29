@@ -1,37 +1,45 @@
 package com.revature.admin.TravelPlanner.DTOs;
 
+import java.util.UUID;
+
 public class OutgoingJwtDTO {
-    private String token;
-    private int userId;
+    private UUID adminId;
+    private String firstName;
+    private String lastName;
     private String email;
+    private boolean isMaster;
+    private String token;
 
-    public OutgoingJwtDTO(String token, int userId, String email) {
-        this.token = token;
-        this.userId = userId;
+    public OutgoingJwtDTO(UUID adminId, String firstName, String lastName, String email, boolean isMaster, String token) {
+        this.adminId = adminId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
+        this.isMaster = isMaster;
         this.token = token;
     }
 
-    public int getUserId() {
-        return userId;
+    public UUID getAdminId() {
+        return adminId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public boolean isMaster() {
+        return isMaster;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

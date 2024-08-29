@@ -11,7 +11,7 @@ public class CustomException extends Exception{
         super("Something Went Wrong.");
     }
 
-    public Object getMsg() {
+    public Object getMessageText() {
         return new CustomMessage(super.getMessage());
     }
 

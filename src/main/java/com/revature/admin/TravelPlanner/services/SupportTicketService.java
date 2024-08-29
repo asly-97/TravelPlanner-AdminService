@@ -3,62 +3,67 @@ package com.revature.admin.TravelPlanner.services;
 import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
+import com.revature.admin.TravelPlanner.DAOs.UserDAO;
+import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
+import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
-import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
+import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
+import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
-import com.revature.admin.TravelPlanner.mappers.StatusMapper;
-import com.revature.admin.TravelPlanner.mappers.TypeMapper;
+import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
+import com.revature.admin.TravelPlanner.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
 public class SupportTicketService {
 
-    //Model Variable
-    private SupportTicketDAO stDao;
-    private AdminDAO aDao;
-    private NoteDAO nDao;
+    //Because note is OneToOne, creating static object to save memory
+    private static OutgoingNoteDTO noteDTO = null;
 
-    //Mappers
+    private SupportTicketDAO ticketDAO;
+    private NoteDAO noteDAO;
+    private UserDAO userDAO;
+
+    private AuthService authService;
+
     private OutgoingSupportTicketMapper ticketMapper;
-    private TypeMapper mapperType;
-    private StatusMapper mapperStatus;
+    private OutgoingNoteMapper noteMapper;
 
-    //Mappers need
-    //Constructor
     @Autowired
-    public SupportTicketService(SupportTicketDAO stDao, AdminDAO aDao, NoteDAO nDao, OutgoingSupportTicketMapper mapperAdmin,
-                                TypeMapper mapperType, StatusMapper mapperStatus) {
-        this.stDao = stDao;
-        this.aDao = aDao;
-        this.nDao = nDao;
-        this.ticketMapper = mapperAdmin;
-        this.mapperType = mapperType;
-        this.mapperStatus = mapperStatus;
+    public SupportTicketService(SupportTicketDAO ticketDAO, NoteDAO noteDAO, UserDAO userDAO, AuthService authService, OutgoingSupportTicketMapper ticketMapper, OutgoingNoteMapper noteMapper) {
+        this.ticketDAO = ticketDAO;
+        this.noteDAO = noteDAO;
+        this.userDAO = userDAO;
+        this.authService = authService;
+        this.ticketMapper = ticketMapper;
+        this.noteMapper = noteMapper;
     }
-
 
     //-------------Get Methods------------
     //
     //
 
     //Method to return a SupportTicket by its id with the associated User using userId and email
-    public OutgoingSupportTicketDTO getSupportTicketById(int id) throws SupportTicketNotFoundException {
+    public OutgoingSupportTicketDTO getSupportTicketById(UUID id) throws SupportTicketNotFoundException {
 
-        Optional<SupportTicket> st = stDao.findById(id);
+        Optional<SupportTicket> st = ticketDAO.findById(id);
 
         if (st.isPresent()) {
 
-             return ticketMapper.toDto(st.get());
+            // Get corresponding note if exists
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+            note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
+            OutgoingSupportTicketDTO outgoingTicket = ticketMapper.toDto(st.get(), noteDTO);
+            noteDTO = null;
+            return outgoingTicket;
 
         } else {
             throw new SupportTicketNotFoundException(id);
@@ -67,33 +72,19 @@ public class SupportTicketService {
 
     }
 
-    //Methods to return all SupportTickets for Users
-    public List<OutgoingSupportTicketDTO> getAllSupportTickets() {
+    //Methods to return all SupportTickets for Admins
+    public List<OutgoingSupportTicketDTO> getAlSupportTickets() {
 
         //Instantiate Lists
-        List<SupportTicket> stl = stDao.findAll();
-        List<OutgoingSupportTicketDTO> returnList = new ArrayList<OutgoingSupportTicketDTO>();
+        List<SupportTicket> stl = ticketDAO.findAll();
+        List<OutgoingSupportTicketDTO> returnList = new ArrayList<>();
 
         for (SupportTicket st: stl) {
-
-            returnList.add(ticketMapper.toDto(st));
-
-        }
-
-        return returnList;
-
-    }
-
-    //Methods to return all SupportTickets for Admins
-    public List<OutgoingSupportTicketDTO> getAlSupportTicketsAdmin() {
-
-        //Instantiate Lists
-        List<Note> nl = nDao.findAll();
-        List<OutgoingSupportTicketDTO> returnList = new ArrayList<OutgoingSupportTicketDTO>();
-
-        for (Note n: nl) {
-
-            returnList.add(ticketMapper.toDto(n.getSupportTicket()));
+            // Get corresponding note if exists
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(st.getSupportTicketId());
+            note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
+            returnList.add(ticketMapper.toDto(st,noteDTO));
+            noteDTO = null;
 
         }
 
@@ -101,74 +92,64 @@ public class SupportTicketService {
 
     }
 
-    //Method to return all tickets assigned to an admin
-    public List<OutgoingSupportTicketDTO> getAllToAdminId(int id) throws AdminNotFoundException,
-            SupportTicketNotFoundException{
+    //Return a list of all Support Tickets submitted by a User
+    public List<OutgoingSupportTicketDTO> getAllSupportTicketsByUserId(UUID id) throws UserNotFoundException{
 
-        //Check if Admin exists
-        if (!(aDao.existsById(id))) {
-            throw new AdminNotFoundException(id);
-        }
+        Optional<User> user = userDAO.findById(id);
 
-        //Instantiate Lists
-        List<Note> nl = nDao.findAllByAdminAdminId(id);
-        List<SupportTicket> stl = new ArrayList<SupportTicket>();
-        List<OutgoingSupportTicketDTO> returnList = new ArrayList<OutgoingSupportTicketDTO>();
+        if (user.isPresent()){
 
-        //Find SupportTickets that are assigned to Admin
-        for (Note n: nl) {
+            List<SupportTicket> stList = ticketDAO.findAllByUserUserId(id);
+            List<OutgoingSupportTicketDTO> outgoingTicketList = new ArrayList<OutgoingSupportTicketDTO>();
+            for (SupportTicket st: stList) {
 
-            Optional<SupportTicket> optST = stDao.findById(n.getSupportTicket().getSupportTicketId());
-
-            if (optST.isPresent()) {
-
-                stl.add(optST.get());
-
-            } else {
-                throw new SupportTicketNotFoundException();
+                Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(st.getSupportTicketId());
+                note.ifPresent(value -> noteDTO = noteMapper.toDto(value));
+                outgoingTicketList.add(ticketMapper.toDto(st, noteDTO));
+                noteDTO = null;
 
             }
 
-        }
+            return outgoingTicketList;
 
-        //Add AdminOutgoingSupportTicketDTO to returnList
-        for (SupportTicket st: stl) {
-
-            returnList.add(ticketMapper.toDto(st));
+        } else {
+            throw new UserNotFoundException(id);
 
         }
 
-        return returnList;
 
     }
-
-    //-------------Post Methods------------
-    //
-    //
-
 
     //-------------Patch Methods------------
     //
     //
 
 
-    //Method to update the Support Ticket Status
-    public OutgoingSupportTicketDTO updateStatus(int id, String status) throws SupportTicketNotFoundException, InvalidStatusException {
+    // Resolve a Support Ticket
+    public OutgoingSupportTicketDTO resolve(UUID ticketId, String noteText) throws SupportTicketNotFoundException,
+            AdminNotFoundException {
 
-        Optional<SupportTicket> foundTicket = stDao.findById(id);
+        SupportTicket ticket = ticketDAO
+                .findById(ticketId)
+                .orElseThrow(()->new SupportTicketNotFoundException(ticketId));
 
-        if (foundTicket.isPresent()) {
+        // Will be resolved by this authenticated admin
+        Admin loggedInAdmin = authService.getLoggedInAdmin();
 
-            SupportTicket updatedTicket = foundTicket.get();
-            updatedTicket.setStatus(mapperStatus.tDto(status));
-            stDao.save(updatedTicket);
-            return ticketMapper.toDto(updatedTicket);
+        // Create a note for the ticket
+        noteText = noteText == null? "Your ticket was resolved." : noteText;
+        Note note = new Note();
+        note.setText(noteText);
+        note.setAdmin(loggedInAdmin); // Attach to the current Admin
+        note.setSupportTicket(ticket); // Attach it to the support ticket
+        noteDAO.save(note); // Save the note
 
-        } else {
-            throw new SupportTicketNotFoundException(id);
+        // Resolving the ticket
+        ticket.setStatus(TicketStatus.RESOLVED);
+        ticket.setResolvedAt(new Date());
+        ticketDAO.save(ticket); // Persist the changes
 
-        }
-
+        return ticketMapper.toDto(ticket,noteMapper.toDto(note));
     }
 
 
@@ -177,14 +158,23 @@ public class SupportTicketService {
     //
 
     //Method to delete a Support Ticket from the Database
-    public OutgoingSupportTicketDTO delete(int id) throws SupportTicketNotFoundException {
+    public OutgoingSupportTicketDTO delete(UUID id) throws SupportTicketNotFoundException {
 
-        Optional<SupportTicket> toDeleteTicket = stDao.findById(id);
+        Optional<SupportTicket> toDeleteTicket = ticketDAO.findById(id);
 
         if (toDeleteTicket.isPresent()) {
 
-            stDao.delete(toDeleteTicket.get());
-            return ticketMapper.toDto(toDeleteTicket.get());
+            // Get corresponding note if exists
+            Optional<Note> note = noteDAO.findBySupportTicketSupportTicketId(id);
+            note.ifPresent(value -> {
+                noteDTO = noteMapper.toDto(value);
+                noteDAO.delete(value);
+            });
+
+            ticketDAO.delete(toDeleteTicket.get());
+            OutgoingSupportTicketDTO outgoingTicket = ticketMapper.toDto(toDeleteTicket.get(),noteDTO);
+            noteDTO = null;
+            return outgoingTicket;
 
         } else {
             throw new SupportTicketNotFoundException(id);

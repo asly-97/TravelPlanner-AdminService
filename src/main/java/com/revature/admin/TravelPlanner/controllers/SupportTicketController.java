@@ -1,9 +1,8 @@
 package com.revature.admin.TravelPlanner.controllers;
 
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
-import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
-import com.revature.admin.TravelPlanner.exceptions.InvalidStatusException;
+import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/admin/support")
+@RequestMapping("/support")
 @CrossOrigin                    //TODO::Create extra security safety
 public class SupportTicketController {
 
@@ -32,9 +32,9 @@ public class SupportTicketController {
     *   ==============GET MAPPINGS=================
     */
 
-    //Endpoint ./support?id={supportTicketId}
+    //Return Support Ticket by Id
     @GetMapping
-    public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") int id ) {
+    public ResponseEntity<?> getSupportTicketById( @RequestParam(name = "id") UUID id ) {
 
         try {
 
@@ -42,62 +42,33 @@ public class SupportTicketController {
             return ResponseEntity.ok(returnSupportTicket);
 
         } catch (SupportTicketNotFoundException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessageText());
 
         }
 
     }
 
-    //Case-sensitive. Query in ALL CAPS!
-    @GetMapping("/get")
-    public ResponseEntity<?> getSupportTicketsByType( @RequestParam(name = "type") TicketType type) {
-
-        //TODO::Create Service
-        return ResponseEntity.ok("TODO");
-    }
-
-    //Get All SupportTickets
-    @GetMapping("/get/all")
+    //Get All Support Tickets
+    @GetMapping("/all")
     public ResponseEntity<List<OutgoingSupportTicketDTO>> getAllSupportTickets() {
-        return ResponseEntity.ok(sts.getAllSupportTickets());
+        return ResponseEntity.ok(sts.getAlSupportTickets());
     }
 
-    //Returns all support tickets assigned to admin
-    @GetMapping("/get/admin")
-    public ResponseEntity<?> getAllSupportTicketsForAdmin( @RequestParam(name = "adminId", required = false) Integer id) {
-
-        if (id == null) {
-            return ResponseEntity.ok(sts.getAlSupportTicketsAdmin());
-        }
-
-        try {
-
-            List<OutgoingSupportTicketDTO> returnList = sts.getAllToAdminId(id);
-            return ResponseEntity.ok(returnList);
-
-        } catch (AdminNotFoundException | SupportTicketNotFoundException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-
-        }
-
-    }
-
-
+    /*
+    *   ==============PATCH MAPPINGS=================
+    */
 
     //Resolve a Support Ticket
-    @PatchMapping("/resolve/{id}")
-    public ResponseEntity<?> resolve(@PathVariable int id, @RequestBody String type){
+    // Resolving a ticket can by sending a request to this endpoint
+    // And include an optional note text
+    @PatchMapping("/{ticketId}")
+    public ResponseEntity<OutgoingSupportTicketDTO> resolveTicket(
+            @PathVariable UUID ticketId,
+            @RequestBody String noteText) throws SupportTicketNotFoundException, AdminNotFoundException {
 
-        try {
+        OutgoingSupportTicketDTO resolvedTicket = sts.resolve(ticketId, noteText);
 
-            OutgoingSupportTicketDTO resolvedTicket = sts.updateStatus(id, type);
-            return ResponseEntity.ok(resolvedTicket);
-
-        } catch (SupportTicketNotFoundException | InvalidStatusException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-
-        }
-
+        return ResponseEntity.ok(resolvedTicket);
     }
 
     /*
@@ -105,17 +76,23 @@ public class SupportTicketController {
     */
 
     //Delete a Support Ticket from the DB
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(int id){
+    @DeleteMapping("/{ticketId}")
+    public ResponseEntity<?> delete(@PathVariable UUID ticketId){
 
         try{
-            return ResponseEntity.ok(sts.delete(id));
+            return ResponseEntity.ok(sts.delete(ticketId));
 
         } catch (SupportTicketNotFoundException e) {
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.ok(e.getMessageText());
 
         }
 
+    }
+
+    // handles all the custom exceptions
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Object> handleCustomException( CustomException e){
+        return ResponseEntity.status(e.getStatus()).body(e.getMessageText());
     }
 
 }

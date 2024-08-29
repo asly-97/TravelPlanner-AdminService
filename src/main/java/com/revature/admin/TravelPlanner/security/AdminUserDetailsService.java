@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AdminUserDetailsService implements UserDetailsService {
 
@@ -29,7 +31,7 @@ public class AdminUserDetailsService implements UserDetailsService {
     }
 
     // Load admin details by user ID
-    public AdminUserDetails loadUserByUserId(int userId) throws UsernameNotFoundException {
+    public AdminUserDetails loadUserByUserId(UUID userId) throws UsernameNotFoundException {
 
         // Find the admin by ID or throw an exception if not found
         Admin admin = adminDAO.findById(userId).orElseThrow(() -> {
