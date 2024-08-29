@@ -42,9 +42,9 @@ public class SecurityConfig {
                     // Allow preflight requests
                     .requestMatchers(HttpMethod.OPTIONS, "/admin/**").permitAll()
                     // Allow unrestricted access to user registration and login endpoints
-                    .requestMatchers(HttpMethod.POST, "/admin/register", "/admin/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/register", "/login").permitAll()
                     // Require authentication for all other admin-specific /admin/** URLs
-                    .requestMatchers("/admin/**").authenticated()
+                    .requestMatchers("/**").authenticated()
                     // Require master role for master-specific /master/** URLs
                     .requestMatchers("/master/**").hasAuthority(AdminRole.ROLE_MASTER.name())
                     // Deny all other requests outside admin-specific /admin/**
