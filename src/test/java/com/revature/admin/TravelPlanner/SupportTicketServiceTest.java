@@ -424,4 +424,88 @@ public class SupportTicketServiceTest {
         assertTrue(thrown.getMessage().contains("User with ID:" + id + " Not Found."));
     }
 
+    @Test
+    public void testResolve() throws Exception {
+        //given
+        final Date createdAt = new Date(2024, Calendar.AUGUST, 13);
+        final UUID adminId = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+        final UUID ticketId = UUID.randomUUID();
+        final UUID noteId = UUID.randomUUID();
+        final String noteText = "NoteText";
+
+        Admin admin = new Admin();
+        admin.setAdminId(adminId);
+        admin.setFirstName("Bob");
+        admin.setLastName("Smith");
+        admin.setEmail("bobsmith@revature.net");
+        admin.setPassword("password");
+        admin.setCreatedAt(createdAt);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("johndoe@revature.net");
+        user.setPassword("password");
+        user.setCreatedAt(createdAt);
+
+        SupportTicket ticket = new SupportTicket();
+        ticket.setSupportTicketId(ticketId);
+        ticket.setUser(user);
+        ticket.setDescription("Description");
+        ticket.setType(TicketType.GENERAL);
+        ticket.setStatus(TicketStatus.PENDING);
+        ticket.setCreatedAt(createdAt);
+        ticket.setResolvedAt(null);
+
+        Note note = new Note();
+        note.setNoteId(noteId);
+        note.setSupportTicket(ticket);
+        note.setText("Note Text");
+        note.setAdmin(admin);
+        note.setCreatedAt(createdAt);
+
+        List<Note> notes = new ArrayList<Note>();
+        notes.add(note);
+        admin.setNotes(notes);
+
+        OutgoingNoteDTO outgoingNote = new OutgoingNoteDTO();
+        outgoingNote.setNoteId(noteId);
+        outgoingNote.setAdminId(adminId);
+        outgoingNote.setTicketId(ticketId);
+        outgoingNote.setText(note.getText());
+        outgoingNote.setCreatedAt(createdAt);
+
+        OutgoingSupportTicketDTO outgoingTicket = new OutgoingSupportTicketDTO();
+        outgoingTicket.setSupportTicketId(ticketId);
+        outgoingTicket.setUserId(userId);
+        outgoingTicket.setDescription(ticket.getDescription());
+        outgoingTicket.setStatus(ticket.getStatus());
+        outgoingTicket.setType(ticket.getType());
+        outgoingTicket.setCreatedAt(ticket.getCreatedAt());
+        outgoingTicket.setResolvedDate(ticket.getResolvedAt());
+        outgoingTicket.setNote(outgoingNote);
+
+        when(ticketDAO.findById(ticketId)).thenReturn(Optional.of(ticket));
+        when(authService.getLoggedInAdmin()).thenReturn(admin);
+        when(noteDAO.save(note)).thenReturn(note);
+        when(ticketDAO.save(ticket)).thenReturn(ticket);
+        when(noteMapper.toDto(note)).thenReturn(outgoingNote);
+        when(ticketMapper.toDto(ticket, outgoingNote)).thenReturn(outgoingTicket);
+
+        //when
+        OutgoingSupportTicketDTO returningTicket = supportService.resolve(ticketId, noteText);
+
+        //then
+        assertEquals(returningTicket, outgoingTicket);
+        verify(ticketDAO, times(1)).findById(ticketId);
+        verify(authService, times(1)).getLoggedInAdmin();
+        verify(noteDAO, times(1)).save(note);
+        verify(ticketDAO, times(1)).save(ticket);
+        verify(noteMapper, times(1)).toDto(note);
+        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
+
+    }
+
 }//End of SupportTicketServiceTest
