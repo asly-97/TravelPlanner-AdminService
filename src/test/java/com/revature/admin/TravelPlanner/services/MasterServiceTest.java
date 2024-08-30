@@ -1,4 +1,4 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
 import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
@@ -8,20 +8,15 @@ import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.mappers.AdminMapper;
 import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
-import com.revature.admin.TravelPlanner.services.AuthService;
-import com.revature.admin.TravelPlanner.services.MasterService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;

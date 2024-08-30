@@ -1,4 +1,4 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
 import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
@@ -7,8 +7,6 @@ import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
 import com.revature.admin.TravelPlanner.mappers.AdminMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
-import com.revature.admin.TravelPlanner.services.AdminService;
-import com.revature.admin.TravelPlanner.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,9 +1,8 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
 import com.revature.admin.TravelPlanner.DAOs.UserDAO;
 import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
 import com.revature.admin.TravelPlanner.models.User;
-import com.revature.admin.TravelPlanner.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

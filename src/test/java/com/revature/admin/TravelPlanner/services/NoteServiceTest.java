@@ -1,4 +1,4 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
@@ -8,7 +8,6 @@ import com.revature.admin.TravelPlanner.exceptions.InvalidNoteTextException;
 import com.revature.admin.TravelPlanner.exceptions.NoteNotFoundException;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
-import com.revature.admin.TravelPlanner.services.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
