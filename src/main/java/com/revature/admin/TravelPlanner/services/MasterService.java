@@ -1,10 +1,14 @@
 package com.revature.admin.TravelPlanner.services;
 
+import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingAdminDTO;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.CustomException;
 import com.revature.admin.TravelPlanner.exceptions.EmailAlreadyExistException;
+import com.revature.admin.TravelPlanner.mappers.AdminMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
+import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,28 @@ import java.util.UUID;
 @Service
 @PreAuthorize("hasRole('ROLE_MASTER')")
 public class MasterService extends AdminService{
+
+    protected AuthService authService;
+
+    //DAOs
+
+    protected AdminDAO adminDAO;
+
+    //Mapper
+
+    protected AdminMapper adminMapper;
+
+
+    protected PasswordEncoderProvider passwordEncoder;
+
+    @Autowired
+    public MasterService(AuthService authService, AdminDAO adminDAO, AdminMapper adminMapper, PasswordEncoderProvider passwordEncoder) {
+        super(authService, adminDAO, adminMapper, passwordEncoder);
+    }
+
+    public void setPasswordEncoder(PasswordEncoderProvider passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Admin getAdminById(UUID adminId) throws CustomException {
         Optional<Admin> admin = adminDAO.findById(adminId);
