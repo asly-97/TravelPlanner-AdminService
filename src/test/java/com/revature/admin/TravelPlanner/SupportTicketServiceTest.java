@@ -613,8 +613,24 @@ public class SupportTicketServiceTest {
         outgoingTicket.setCreatedAt(ticket.getCreatedAt());
         outgoingTicket.setResolvedDate(ticket.getResolvedAt());
         outgoingTicket.setNote(outgoingNote);
-        
+
     }
 
+    @Test
+    public void testSupportTicketNotFoundDelete() {
+        //given
+        final UUID id = UUID.randomUUID();
 
+        when(ticketDAO.findById(id)).thenReturn(Optional.empty());
+
+        //when
+        SupportTicketNotFoundException thrown = assertThrows(
+                SupportTicketNotFoundException.class, () -> supportService.delete(id)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("Support Ticket with Id: " + id + " Not Found."));
+        verify(ticketDAO, times(1)).findById(id);
+
+    }
 }//End of SupportTicketServiceTest
