@@ -1,6 +1,5 @@
 package com.revature.admin.TravelPlanner.services;
 
-import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
 import com.revature.admin.TravelPlanner.DAOs.UserDAO;
@@ -38,7 +37,8 @@ public class SupportTicketService {
     private OutgoingNoteMapper noteMapper;
 
     @Autowired
-    public SupportTicketService(SupportTicketDAO ticketDAO, NoteDAO noteDAO, UserDAO userDAO, AuthService authService, OutgoingSupportTicketMapper ticketMapper, OutgoingNoteMapper noteMapper) {
+    public SupportTicketService(SupportTicketDAO ticketDAO, NoteDAO noteDAO, UserDAO userDAO, AuthService authService,
+                                OutgoingSupportTicketMapper ticketMapper, OutgoingNoteMapper noteMapper) {
         this.ticketDAO = ticketDAO;
         this.noteDAO = noteDAO;
         this.userDAO = userDAO;
@@ -135,6 +135,7 @@ public class SupportTicketService {
 
         // Will be resolved by this authenticated admin
         Admin loggedInAdmin = authService.getLoggedInAdmin();
+
 
         // Create a note for the ticket
         noteText = noteText == null? "Your ticket was resolved." : noteText;
