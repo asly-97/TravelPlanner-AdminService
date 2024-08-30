@@ -1,4 +1,4 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
 
 import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
@@ -18,15 +18,11 @@ import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.models.User;
-import com.revature.admin.TravelPlanner.services.AuthService;
-import com.revature.admin.TravelPlanner.services.SupportTicketService;
-import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
