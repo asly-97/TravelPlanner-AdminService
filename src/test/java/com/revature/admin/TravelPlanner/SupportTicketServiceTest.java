@@ -1,6 +1,7 @@
 package com.revature.admin.TravelPlanner;
 
 
+import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
 import com.revature.admin.TravelPlanner.DAOs.UserDAO;
@@ -11,19 +12,24 @@ import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
+import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.models.User;
+import com.revature.admin.TravelPlanner.security.JwtTokenProvider;
 import com.revature.admin.TravelPlanner.services.AuthService;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +49,9 @@ public class SupportTicketServiceTest {
 
     @Mock
     private UserDAO userDAO;
+
+    @Mock
+    private AdminDAO adminDAO;
 
     @Mock
     private OutgoingSupportTicketMapper ticketMapper;
@@ -426,7 +435,7 @@ public class SupportTicketServiceTest {
         assertTrue(thrown.getMessage().contains("User with ID:" + id + " Not Found."));
     }
 
-    //TODO::Fix Me
+    //TODO::Fix StackOverflowError
     @Test
     public void testResolve() throws Exception {
 //        //given
@@ -487,11 +496,11 @@ public class SupportTicketServiceTest {
 //        outgoingTicket.setStatus(ticket.getStatus());
 //        outgoingTicket.setType(ticket.getType());
 //        outgoingTicket.setCreatedAt(ticket.getCreatedAt());
-//        outgoingTicket.setResolvedDate(null);
+//        outgoingTicket.setResolvedDate(ticket.getResolvedAt());
 //        outgoingTicket.setNote(outgoingNote);
 //
 //        when(ticketDAO.findById(ticketId)).thenReturn(Optional.of(ticket));
-//        when(authService.getLoggedInAdmin()).thenReturn(admin);
+//        doReturn(admin).when(authService).getLoggedInAdmin();
 //        when(noteDAO.save(note)).thenReturn(note);
 //        when(ticketDAO.save(ticket)).thenReturn(ticket);
 //        when(noteMapper.toDto(note)).thenReturn(outgoingNote);
@@ -508,7 +517,7 @@ public class SupportTicketServiceTest {
 //        verify(ticketDAO, times(1)).save(ticket);
 //        verify(noteMapper, times(1)).toDto(note);
 //        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
-//
+
     }
 
     @Test
@@ -633,4 +642,5 @@ public class SupportTicketServiceTest {
         verify(ticketDAO, times(1)).findById(id);
 
     }
+
 }//End of SupportTicketServiceTest
