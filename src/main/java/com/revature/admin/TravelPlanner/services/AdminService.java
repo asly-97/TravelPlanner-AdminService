@@ -11,27 +11,36 @@ import com.revature.admin.TravelPlanner.security.PasswordEncoderProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
 public class AdminService {
 
-    @Autowired
+
     protected AuthService authService;
 
     //DAOs
-    @Autowired
+
     protected AdminDAO adminDAO;
 
     //Mapper
-    @Autowired
+
     protected AdminMapper adminMapper;
 
-    @Autowired
+
     protected PasswordEncoderProvider passwordEncoder;
 
+    @Autowired
+    public AdminService(AuthService authService, AdminDAO adminDAO, AdminMapper adminMapper, PasswordEncoderProvider passwordEncoder) {
+        this.authService = authService;
+        this.adminDAO = adminDAO;
+        this.adminMapper = adminMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Admin updateLoggedInAdmin(Map<String, String> newAdmin) throws CustomException {
         Admin admin = authService.getLoggedInAdmin();
@@ -58,6 +67,17 @@ public class AdminService {
         }
 
         return adminDAO.save(admin);
+    }
+
+    public Admin findById(UUID id) throws AdminNotFoundException{
+        return adminDAO.findById(id).orElseThrow(()->new AdminNotFoundException(id));
+    }
+    public Admin findByEmail(String email) throws AdminNotFoundException{
+        return adminDAO.findByEmail(email).orElseThrow(() -> AdminNotFoundException.withEmail(email));
+    }
+
+    public List<Admin> findAll(){
+        return adminDAO.findAll();
     }
 }
 

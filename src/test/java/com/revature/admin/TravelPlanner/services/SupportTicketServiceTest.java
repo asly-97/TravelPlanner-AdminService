@@ -1,5 +1,7 @@
-package com.revature.admin.TravelPlanner;
+package com.revature.admin.TravelPlanner.services;
 
+
+import com.revature.admin.TravelPlanner.DAOs.AdminDAO;
 import com.revature.admin.TravelPlanner.DAOs.NoteDAO;
 import com.revature.admin.TravelPlanner.DAOs.SupportTicketDAO;
 import com.revature.admin.TravelPlanner.DAOs.UserDAO;
@@ -7,6 +9,7 @@ import com.revature.admin.TravelPlanner.DTOs.OutgoingNoteDTO;
 import com.revature.admin.TravelPlanner.DTOs.OutgoingSupportTicketDTO;
 import com.revature.admin.TravelPlanner.enums.TicketStatus;
 import com.revature.admin.TravelPlanner.enums.TicketType;
+import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
@@ -15,13 +18,12 @@ import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.models.User;
-import com.revature.admin.TravelPlanner.services.AuthService;
-import com.revature.admin.TravelPlanner.services.SupportTicketService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,6 +31,9 @@ import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SupportTicketServiceTest {
+
+    @Mock
+    private AuthService authService;
 
     @Mock
     private SupportTicketDAO ticketDAO;
@@ -40,7 +45,7 @@ public class SupportTicketServiceTest {
     private UserDAO userDAO;
 
     @Mock
-    private AuthService authService;
+    private AdminDAO adminDAO;
 
     @Mock
     private OutgoingSupportTicketMapper ticketMapper;
@@ -427,12 +432,86 @@ public class SupportTicketServiceTest {
     @Test
     public void testResolve() throws Exception {
         //given
+        final String noteText = "noteText";
+
+        Admin admin = mock(Admin.class);
+        User user = mock(User.class);
+        SupportTicket ticket = mock(SupportTicket.class);
+        Note note = mock(Note.class);
+        OutgoingNoteDTO outgoingNote = mock(OutgoingNoteDTO.class);
+        OutgoingSupportTicketDTO outgoingTicket = mock(OutgoingSupportTicketDTO.class);
+
+
+        when(ticketDAO.findById(ticket.getSupportTicketId())).thenReturn(Optional.of(ticket));
+        when(authService.getLoggedInAdmin()).thenReturn(admin);
+        when(noteDAO.save(any())).thenReturn(note);
+        when(ticketDAO.save(ticket)).thenReturn(ticket);
+        when(noteMapper.toDto(any())).thenReturn(outgoingNote);
+        when(ticketMapper.toDto(ticket, outgoingNote)).thenReturn(outgoingTicket);
+
+        //when
+        OutgoingSupportTicketDTO returningTicket = supportService.resolve(ticket.getSupportTicketId(), noteText);
+
+        //then
+        assertEquals(returningTicket, outgoingTicket);
+        verify(ticketDAO, times(1)).findById(ticket.getSupportTicketId());
+        verify(authService, times(1)).getLoggedInAdmin();
+        verify(noteDAO, times(1)).save(any());
+        verify(ticketDAO, times(1)).save(ticket);
+        verify(noteMapper, times(1)).toDto(any());
+        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
+
+    }
+
+    @Test
+    public void testSupportTicketNotFoundResolve() {
+        //given
+        final UUID ticketId = UUID.randomUUID();
+        final String text = "note";
+
+        when(ticketDAO.findById(ticketId)).thenReturn(Optional.empty());
+
+        //when
+        SupportTicketNotFoundException thrown = assertThrows(
+                SupportTicketNotFoundException.class, () -> supportService.resolve(ticketId, text)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("Support Ticket with Id: " + ticketId + " Not Found."));
+        verify(ticketDAO, times(1)).findById(ticketId);
+
+    }
+
+    @Test
+    public void testAdminNotFoundException() throws AdminNotFoundException {
+        //given
+        final UUID id = UUID.randomUUID();
+        final String email = "test@test.com";
+        final String text = "Text";
+
+        when(ticketDAO.findById(id)).thenReturn(Optional.of(new SupportTicket()));
+        when(authService.getLoggedInAdmin()).thenThrow(AdminNotFoundException.withEmail(email));
+
+        //when
+        AdminNotFoundException thrown = assertThrows(
+                AdminNotFoundException.class, () -> supportService.resolve(id, text)
+        );
+
+        //then
+        assertTrue(thrown.getMessage().contains("Admin with email "+email+" Not Found."));
+        verify(ticketDAO, times(1)).findById(id);
+        verify(authService, times(1)).getLoggedInAdmin();
+
+    }
+
+    @Test
+    public void testDelete() {
+        //given
         final Date createdAt = new Date(2024, Calendar.AUGUST, 13);
         final UUID adminId = UUID.randomUUID();
         final UUID userId = UUID.randomUUID();
         final UUID ticketId = UUID.randomUUID();
         final UUID noteId = UUID.randomUUID();
-        final String noteText = "NoteText";
 
         Admin admin = new Admin();
         admin.setAdminId(adminId);
@@ -487,24 +566,23 @@ public class SupportTicketServiceTest {
         outgoingTicket.setResolvedDate(ticket.getResolvedAt());
         outgoingTicket.setNote(outgoingNote);
 
-        when(ticketDAO.findById(ticketId)).thenReturn(Optional.of(ticket));
-        when(authService.getLoggedInAdmin()).thenReturn(admin);
-        when(noteDAO.save(note)).thenReturn(note);
-        when(ticketDAO.save(ticket)).thenReturn(ticket);
-        when(noteMapper.toDto(note)).thenReturn(outgoingNote);
-        when(ticketMapper.toDto(ticket, outgoingNote)).thenReturn(outgoingTicket);
+    }
+
+    @Test
+    public void testSupportTicketNotFoundDelete() {
+        //given
+        final UUID id = UUID.randomUUID();
+
+        when(ticketDAO.findById(id)).thenReturn(Optional.empty());
 
         //when
-        OutgoingSupportTicketDTO returningTicket = supportService.resolve(ticketId, noteText);
+        SupportTicketNotFoundException thrown = assertThrows(
+                SupportTicketNotFoundException.class, () -> supportService.delete(id)
+        );
 
         //then
-        assertEquals(returningTicket, outgoingTicket);
-        verify(ticketDAO, times(1)).findById(ticketId);
-        verify(authService, times(1)).getLoggedInAdmin();
-        verify(noteDAO, times(1)).save(note);
-        verify(ticketDAO, times(1)).save(ticket);
-        verify(noteMapper, times(1)).toDto(note);
-        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
+        assertTrue(thrown.getMessage().contains("Support Ticket with Id: " + id + " Not Found."));
+        verify(ticketDAO, times(1)).findById(id);
 
     }
 
