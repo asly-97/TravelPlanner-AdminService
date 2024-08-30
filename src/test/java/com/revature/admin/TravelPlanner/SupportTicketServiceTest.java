@@ -12,23 +12,21 @@ import com.revature.admin.TravelPlanner.enums.TicketType;
 import com.revature.admin.TravelPlanner.exceptions.AdminNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.SupportTicketNotFoundException;
 import com.revature.admin.TravelPlanner.exceptions.UserNotFoundException;
-import com.revature.admin.TravelPlanner.mappers.OutgoingJWTMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingNoteMapper;
 import com.revature.admin.TravelPlanner.mappers.OutgoingSupportTicketMapper;
 import com.revature.admin.TravelPlanner.models.Admin;
 import com.revature.admin.TravelPlanner.models.Note;
 import com.revature.admin.TravelPlanner.models.SupportTicket;
 import com.revature.admin.TravelPlanner.models.User;
-import com.revature.admin.TravelPlanner.security.JwtTokenProvider;
 import com.revature.admin.TravelPlanner.services.AuthService;
 import com.revature.admin.TravelPlanner.services.SupportTicketService;
+import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -435,88 +433,37 @@ public class SupportTicketServiceTest {
         assertTrue(thrown.getMessage().contains("User with ID:" + id + " Not Found."));
     }
 
-    //TODO::Fix StackOverflowError
     @Test
     public void testResolve() throws Exception {
-//        //given
-//        final Date createdAt = new Date(2024, Calendar.AUGUST, 13);
-//        final UUID adminId = UUID.randomUUID();
-//        final UUID userId = UUID.randomUUID();
-//        final UUID ticketId = UUID.randomUUID();
-//        final UUID noteId = UUID.randomUUID();
-//        final String noteText = "NoteText";
-//
-//        Admin admin = new Admin();
-//        admin.setAdminId(adminId);
-//        admin.setFirstName("Bob");
-//        admin.setLastName("Smith");
-//        admin.setEmail("bobsmith@revature.net");
-//        admin.setPassword("password");
-//        admin.setCreatedAt(createdAt);
-//
-//        User user = new User();
-//        user.setUserId(userId);
-//        user.setFirstName("John");
-//        user.setLastName("Doe");
-//        user.setEmail("johndoe@revature.net");
-//        user.setPassword("password");
-//        user.setCreatedAt(createdAt);
-//
-//        SupportTicket ticket = new SupportTicket();
-//        ticket.setSupportTicketId(ticketId);
-//        ticket.setUser(user);
-//        ticket.setDescription("Description");
-//        ticket.setType(TicketType.GENERAL);
-//        ticket.setStatus(TicketStatus.PENDING);
-//        ticket.setCreatedAt(createdAt);
-//        ticket.setResolvedAt(null);
-//
-//        Note note = new Note();
-//        note.setNoteId(noteId);
-//        note.setSupportTicket(ticket);
-//        note.setText("Note Text");
-//        note.setAdmin(admin);
-//        note.setCreatedAt(createdAt);
-//
-//        List<Note> notes = new ArrayList<Note>();
-//        notes.add(note);
-//        admin.setNotes(notes);
-//
-//        OutgoingNoteDTO outgoingNote = new OutgoingNoteDTO();
-//        outgoingNote.setNoteId(noteId);
-//        outgoingNote.setAdminId(adminId);
-//        outgoingNote.setTicketId(ticketId);
-//        outgoingNote.setText(note.getText());
-//        outgoingNote.setCreatedAt(createdAt);
-//
-//        OutgoingSupportTicketDTO outgoingTicket = new OutgoingSupportTicketDTO();
-//        outgoingTicket.setSupportTicketId(ticketId);
-//        outgoingTicket.setUserId(userId);
-//        outgoingTicket.setDescription(ticket.getDescription());
-//        outgoingTicket.setStatus(ticket.getStatus());
-//        outgoingTicket.setType(ticket.getType());
-//        outgoingTicket.setCreatedAt(ticket.getCreatedAt());
-//        outgoingTicket.setResolvedDate(ticket.getResolvedAt());
-//        outgoingTicket.setNote(outgoingNote);
-//
-//        when(ticketDAO.findById(ticketId)).thenReturn(Optional.of(ticket));
-//        doReturn(admin).when(authService).getLoggedInAdmin();
-//        when(noteDAO.save(note)).thenReturn(note);
-//        when(ticketDAO.save(ticket)).thenReturn(ticket);
-//        when(noteMapper.toDto(note)).thenReturn(outgoingNote);
-//        when(ticketMapper.toDto(ticket, outgoingNote)).thenReturn(outgoingTicket);
-//
-//        //when
-//        OutgoingSupportTicketDTO returningTicket = supportService.resolve(ticketId, noteText);
-//
-//        //then
-//        assertEquals(returningTicket, outgoingTicket);
-//        verify(ticketDAO, times(1)).findById(ticketId);
-//        verify(authService, times(1)).getLoggedInAdmin();
-//        verify(noteDAO, times(1)).save(note);
-//        verify(ticketDAO, times(1)).save(ticket);
-//        verify(noteMapper, times(1)).toDto(note);
-//        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
+        //given
+        final String noteText = "noteText";
+
+        Admin admin = mock(Admin.class);
+        User user = mock(User.class);
+        SupportTicket ticket = mock(SupportTicket.class);
+        Note note = mock(Note.class);
+        OutgoingNoteDTO outgoingNote = mock(OutgoingNoteDTO.class);
+        OutgoingSupportTicketDTO outgoingTicket = mock(OutgoingSupportTicketDTO.class);
+
+
+        when(ticketDAO.findById(ticket.getSupportTicketId())).thenReturn(Optional.of(ticket));
+        when(authService.getLoggedInAdmin()).thenReturn(admin);
+        when(noteDAO.save(any())).thenReturn(note);
+        when(ticketDAO.save(ticket)).thenReturn(ticket);
+        when(noteMapper.toDto(any())).thenReturn(outgoingNote);
+        when(ticketMapper.toDto(ticket, outgoingNote)).thenReturn(outgoingTicket);
+
+        //when
+        OutgoingSupportTicketDTO returningTicket = supportService.resolve(ticket.getSupportTicketId(), noteText);
+
+        //then
+        assertEquals(returningTicket, outgoingTicket);
+        verify(ticketDAO, times(1)).findById(ticket.getSupportTicketId());
+        verify(authService, times(1)).getLoggedInAdmin();
+        verify(noteDAO, times(1)).save(any());
+        verify(ticketDAO, times(1)).save(ticket);
+        verify(noteMapper, times(1)).toDto(any());
+        verify(ticketMapper, times(1)).toDto(ticket, outgoingNote);
 
     }
 
